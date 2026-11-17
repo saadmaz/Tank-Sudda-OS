@@ -33,6 +33,7 @@
 
 ### Added
 
+- Legacy import: `npm run legacy:export` and `npm run legacy:import` move the legacy app's settings, staff, orders, inspections, payments and customers across, keeping every total exact; dry run by default and safe to re-run.
 - Website intake: bookings and enquiries from tanksudda.com arrive as new leads through a signed webhook, matched to an existing customer by phone and to a service location by town, flagged for inspection, and never duplicated on retries.
 - WhatsApp messages: booking confirmation, quote follow-up, payment reminder, review request and re-clean reminder templates with placeholders, editable under Settings and one tap away on jobs and customers.
 - Before, after and other photos on every job, taken with the phone camera and resized before upload.
