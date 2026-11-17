@@ -67,6 +67,20 @@ sequenceDiagram
 | `usernames/{key}`       | Username index for sign-in                                    | None                              |
 | `auditLog/{id}`         | Append-only record of changes                                 | Manager+ read; append in own name |
 
+### Business data
+
+| Collection         | Holds                                                                               | Written by                             |
+| ------------------ | ----------------------------------------------------------------------------------- | -------------------------------------- |
+| `settings/general` | Prices, locations, equipment, terms, targets, document numbering                    | Settings (Manager+)                    |
+| `customers/{id}`   | Profile, phones (with a canonical `phoneKey`), sites, last and next cleaning        | Job editor, customer page              |
+| `jobs/{ref}`       | One piece of work from lead to completion; the id is the reference `TS-YYMMDD-XXXX` | Leads, jobs, field crews (status only) |
+
+Leads and jobs share the `jobs` collection ([ADR-0005](adr/0005-leads-and-jobs-share-one-collection.md)). Each job stores its own prices and a computed `subtotal` and `total`, so reports never re-price old work. Every write goes through `src/lib/db.ts`, which batches the job with its customer and appends an audit entry.
+
+### Keeping reads low
+
+The app listens to every open job plus closed jobs updated in the last 120 days, rather than the whole history. A customer's page and a single job page subscribe to exactly what they show, so older records still open instantly. Both listeners use single-field queries, which need no composite indexes.
+
 Changing someone's role, modules or active status revokes their refresh tokens, so the old claims stop working within an hour at most.
 
 ## Design principles
