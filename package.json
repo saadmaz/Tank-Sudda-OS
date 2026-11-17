@@ -1,6 +1,6 @@
 {
   "name": "tank-sudda-pos",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Operations and point-of-sale platform for Tank Sudda: leads, inspections, scheduling, jobs, quotes, invoices, payments and reports.",
   "homepage": "https://github.com/saadmaz/Tank-Sudda-POS#readme",
   "repository": {
