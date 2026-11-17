@@ -23,6 +23,7 @@ import {
 import { formatPhone, toE164 } from "@/lib/phone";
 import { priceSummary, sumpVolume, type SumpItem, type TankItem } from "@/lib/pricing";
 import { activeEquipment, activeLocations, activeTankSizes } from "@/lib/settings";
+import { conflictsFor } from "@/lib/schedule";
 import { crewFor } from "@/lib/staff";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -98,7 +99,7 @@ export function JobEditor({
   onClose: () => void;
   onSaved?: (job: Job) => void;
 }) {
-  const { settings, customers, staff } = useStore();
+  const { settings, customers, staff, jobs } = useStore();
   const locations = activeLocations(settings);
   const sizes = activeTankSizes(settings);
   const firstLoc = locations[0];
@@ -243,6 +244,12 @@ export function JobEditor({
       setSaving(false);
     }
   };
+
+  const clashes = conflictsFor(draft, jobs, job?.id);
+  const clashName = (c: (typeof clashes)[number]) =>
+    c.kind === "staff"
+      ? (staff.find((x) => x.id === c.resourceId)?.name ?? "Someone")
+      : (settings.equipment.find((x) => x.id === c.resourceId)?.name ?? "Equipment");
 
   const supervisors = crewFor(staff, "supervisor");
   const technicians = crewFor(staff, "technician");
@@ -776,6 +783,16 @@ export function JobEditor({
           </Block>
 
           <Block title="Crew and equipment">
+            {clashes.length > 0 && (
+              <div className="space-y-0.5 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs">
+                {clashes.map((c) => (
+                  <p key={`${c.date}${c.resourceId}`}>
+                    <strong>{clashName(c)}</strong> is already on{" "}
+                    {c.refs.filter((x) => x !== "TS-DRAFT").join(", ")} on {c.date}.
+                  </p>
+                ))}
+              </div>
+            )}
             <Field label="Supervisor" htmlFor="j-sup">
               <Select
                 id="j-sup"
