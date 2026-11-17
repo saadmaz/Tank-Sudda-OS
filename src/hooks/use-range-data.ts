@@ -18,6 +18,7 @@ export interface RangeData {
  * no composite indexes are needed.
  */
 export function useRangeData(range: DateRange) {
+  const { from, to } = range;
   const [data, setData] = useState<RangeData>({ jobs: [], payments: [], inspectionDates: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -25,33 +26,27 @@ export function useRangeData(range: DateRange) {
   const load = useCallback(async () => {
     setLoading(true);
     setError(false);
-    const ts = timestampBounds(range);
+    const ts = timestampBounds({ from, to });
     const jobs = collection(db, "jobs");
     try {
       const [byIntake, byCompleted, byCancelled, byDate, payments, inspections] = await Promise.all(
         [
-          getDocs(
-            query(jobs, where("intakeDate", ">=", range.from), where("intakeDate", "<=", range.to)),
-          ),
+          getDocs(query(jobs, where("intakeDate", ">=", from), where("intakeDate", "<=", to))),
           getDocs(
             query(jobs, where("completedAt", ">=", ts.from), where("completedAt", "<=", ts.to)),
           ),
           getDocs(
             query(jobs, where("cancelledAt", ">=", ts.from), where("cancelledAt", "<=", ts.to)),
           ),
-          getDocs(query(jobs, where("date", ">=", range.from), where("date", "<=", range.to))),
+          getDocs(query(jobs, where("date", ">=", from), where("date", "<=", to))),
           getDocs(
-            query(
-              collection(db, "payments"),
-              where("date", ">=", range.from),
-              where("date", "<=", range.to),
-            ),
+            query(collection(db, "payments"), where("date", ">=", from), where("date", "<=", to)),
           ),
           getDocs(
             query(
               collection(db, "inspections"),
-              where("date", ">=", range.from),
-              where("date", "<=", range.to),
+              where("date", ">=", from),
+              where("date", "<=", to),
             ),
           ),
         ],
@@ -73,7 +68,7 @@ export function useRangeData(range: DateRange) {
     } finally {
       setLoading(false);
     }
-  }, [range.from, range.to]);
+  }, [from, to]);
 
   useEffect(() => {
     void load();

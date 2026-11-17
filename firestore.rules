@@ -93,7 +93,7 @@ service cloud.firestore {
         // Field crews move jobs along and add notes; the office edits the rest.
         && (!isFieldRole() || request.resource.data.diff(resource.data).affectedKeys()
               .hasOnly(["status", "updatedAt", "updatedBy", "startedAt", "completedAt", "notes",
-                        "paidAmount", "paymentStatus"]));
+                        "paidAmount", "paymentStatus", "photos"]));
       // Permanent deletion only from the trash.
       allow delete: if isManagerOrAbove() && canEditJobs() && resource.data.isDeleted == true;
     }

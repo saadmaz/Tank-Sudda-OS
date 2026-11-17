@@ -23,9 +23,10 @@ Every STTPS repository uses the same documentation layout. Start with the core d
 
 ## Product and reference
 
-| Document                   | Covers                                                 |
-| -------------------------- | ------------------------------------------------------ |
-| [FEATURES.md](FEATURES.md) | Every module and role, and the phased delivery roadmap |
+| Document                                                       | Covers                                                 |
+| -------------------------------------------------------------- | ------------------------------------------------------ |
+| [FEATURES.md](FEATURES.md)                                     | Every module and role, and the phased delivery roadmap |
+| [integrations/website-leads.md](integrations/website-leads.md) | How website bookings arrive as leads                   |
 
 ## Conventions
 

@@ -13,6 +13,15 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
     }
 
+    // Before and after photos on a job. Anyone working on jobs may add them.
+    match /jobs/{jobId}/photos/{fileName} {
+      allow read: if isAuth();
+      allow create: if isAuth()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if isAuth() && request.auth.token.role in ["Manager", "Admin", "SuperAdmin"];
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

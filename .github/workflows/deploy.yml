@@ -63,6 +63,7 @@ jobs:
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
           FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          WEBSITE_WEBHOOK_SECRET: ${{ secrets.WEBSITE_WEBHOOK_SECRET }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
@@ -71,6 +72,7 @@ jobs:
             FIREBASE_PROJECT_ID
             FIREBASE_CLIENT_EMAIL
             FIREBASE_PRIVATE_KEY
+            WEBSITE_WEBHOOK_SECRET
 
       - name: Smoke test
         run: |
