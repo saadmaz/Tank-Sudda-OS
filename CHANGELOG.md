@@ -31,6 +31,28 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-18
+
+### Added
+
+- Legacy import: `npm run legacy:export` and `npm run legacy:import` move the legacy app's settings, staff, orders, inspections, payments and customers across, keeping every total exact; dry run by default and safe to re-run.
+- Website intake: bookings and enquiries from tanksudda.com arrive as new leads through a signed webhook, matched to an existing customer by phone and to a service location by town, flagged for inspection, and never duplicated on retries.
+- WhatsApp messages: booking confirmation, quote follow-up, payment reminder, review request and re-clean reminder templates with placeholders, editable under Settings and one tap away on jobs and customers.
+- Before, after and other photos on every job, taken with the phone camera and resized before upload.
+- Activity log under Settings: the latest changes and who made them, including website leads.
+- Dashboard: revenue against the monthly target with cash, bank, received and owed; this month's leads, inspections, scheduled, completed and cancelled; today's bookings; and what needs attention (leads waiting for a follow-up, unpaid completed jobs, customers due for cleaning, double bookings).
+- Reports for any period: revenue, money received by method, expenses, profit, lead conversion and average job value; revenue by day; breakdowns by location, lead source, service and cancellation reason; and the legacy leads-by-day summary.
+- Operations ledger and reconciliation PDFs for any date range, and a CSV export of every job in the period.
+- Billing on every job: total, paid and balance with a paid, part-paid or unpaid status; record cash, bank transfer, cheque or card payments (advance suggested from the advance percentage); a receipt PDF per payment; void a payment with a reason.
+- Settlement when the office completes a job, as in the legacy app: final discount, expense breakdown, net profit and an optional final payment, then a job settlement PDF.
+- Quote and invoice PDFs with sequential numbers (Q-1001, INV-1001) that never repeat, line items, discount, advance, bank details, terms and conditions on quotes, and a PAID, PART PAID or UNPAID stamp on invoices. Issuing a quote moves a new lead to Quoted.
+- Billing screen: outstanding balances with how long since completion, quick payment, and payments received by date range with method totals.
+- Schedule: month calendar and a week agenda (the default on phones) of inspections and jobs, with multi-day jobs drawn across their days, status colours with counts, a crew filter, and quick creation of jobs and inspections.
+- Double-booking checks: the same person or machine on two jobs on one day is flagged on the schedule and in the job editor while choosing the crew.
+- Inspections: book a tank, sump or premises-cleaning inspection against a lead or job, then work through a phone-friendly checklist (safety, power, water shut-off, ladder, access, water level, sediment, condition, fittings, and the legacy cleaning details), record measured tanks and sumps, observations and recommendations, and complete it. Risks show as warnings for the office.
+- Apply an inspection's measurements to its job in one tap, re-pricing it.
+- Branded inspection report PDF, downloaded or shared straight to WhatsApp from a phone; the shared document layout that quotes and invoices will use.
+
 ## [0.3.0] - 2026-11-18
 
 ### Added
@@ -71,7 +93,8 @@
 - CI (lint, formatting, type check, unit tests, build), the Cloudflare deploy workflow and Dependabot.
 - README, Contributing guide, Code of Conduct, Security Policy, License, Changelog, issue and pull request templates, and the documentation set: architecture, configuration, deployment, features and roadmap, decision records and runbooks.
 
-[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/saadmaz/Tank-Sudda-POS/releases/tag/v0.1.0

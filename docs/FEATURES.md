@@ -8,19 +8,19 @@
 
 ## Delivery roadmap
 
-The system replaces the legacy single-file operations app (see [ADR-0001](adr/0001-rebuild-the-legacy-single-file-app.md)) and ships in phases. Each phase is one or more pull requests into `develop`, released to `main` as a minor version.
+The system replaces the legacy single-file operations app (see [ADR-0001](adr/0001-rebuild-the-legacy-single-file-app.md)) and ships in phases. Each phase is one or more pull requests into `develop`, released to `main`. Phases 3 to 7 and the legacy import shipped together in `1.0.0`.
 
 | Phase | Release | Scope                                                                                                    | Status    |
 | :---: | :-----: | -------------------------------------------------------------------------------------------------------- | --------- |
 |   0   | `0.1.0` | Repository, tooling, CI, deployment pipeline and documentation                                           | Delivered |
 |   1   | `0.2.0` | Firebase, staff sign-in with PINs, roles and permissions, app shell, settings, staff management          | Delivered |
 |   2   | `0.3.0` | Customers and sites, leads and jobs, the pricing engine for tanks and sumps, statuses and the trash      | Delivered |
-|   3   | `0.4.0` | Site inspections for tanks, sumps and cleaning, the inspection report, converting an inspection to a job | Planned   |
-|   4   | `0.5.0` | Scheduling calendar, multi-day jobs, crew and equipment assignment, conflict warnings                    | Planned   |
-|   5   | `0.6.0` | Quotes and invoices as PDFs, instalment payments, settlement with an expense breakdown, profit           | Planned   |
-|   6   | `0.7.0` | Dashboard and targets, daily ledger, reconciliation, analytics and CSV export                            | Planned   |
-|   7   | `0.8.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Planned   |
-|   —   | `1.0.0` | Legacy data import and cut-over from the single-file app                                                 | Planned   |
+|   3   | `1.0.0` | Site inspections for tanks, sumps and cleaning, the inspection report, converting an inspection to a job | Delivered |
+|   4   | `1.0.0` | Scheduling calendar, multi-day jobs, crew and equipment assignment, conflict warnings                    | Delivered |
+|   5   | `1.0.0` | Quotes and invoices as PDFs, instalment payments, settlement with an expense breakdown, profit           | Delivered |
+|   6   | `1.0.0` | Dashboard and targets, daily ledger, reconciliation, analytics and CSV export                            | Delivered |
+|   7   | `1.0.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Delivered |
+|   —   | `1.0.0` | Legacy data import and cut-over from the single-file app                                                 | Delivered |
 
 ## Leads and jobs
 

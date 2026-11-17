@@ -1,19 +1,13 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { doc } from "firebase/firestore";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Copy,
-  Loader2,
-  MapPin,
-  MessageCircle,
-  Pencil,
-  Phone,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, CalendarDays, Copy, Loader2, MapPin, Pencil, Phone, Users } from "lucide-react";
 import { toast } from "sonner";
+import { BillingPanel } from "@/components/billing-panel";
+import { BookInspection } from "@/components/book-inspection";
 import { JobEditor } from "@/components/job-editor";
+import { JobPhotos } from "@/components/job-photos";
+import { WhatsAppMenu } from "@/components/whatsapp-menu";
 import { StatusMenu } from "@/components/job-actions";
 import { EmptyState } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +17,7 @@ import { useJobNames } from "@/hooks/use-names";
 import { useAuth } from "@/lib/auth";
 import { formatAmount, formatLKR } from "@/lib/currency";
 import { db } from "@/lib/firebase";
+import { INSPECTION_STATUS_LABEL, INSPECTION_TYPES } from "@/lib/inspection";
 import { JOB_SOURCES, jobService, jobSummaryText, scheduleLabel, type Job } from "@/lib/job";
 import { advanceAmount, priceSummary } from "@/lib/pricing";
 import { formatPhone, telLink, whatsappLink } from "@/lib/phone";
@@ -64,8 +59,10 @@ function JobDetail() {
 }
 
 function JobView({ job }: { job: Job }) {
-  const { settings } = useStore();
-  const { session } = useAuth();
+  const { settings, inspections } = useStore();
+  const { session, can } = useAuth();
+  const [booking, setBooking] = useState(false);
+  const linked = inspections.filter((i) => i.jobId === job.id);
   const names = useJobNames()(job);
   const [editing, setEditing] = useState(false);
   const summary = priceSummary(job);
@@ -115,13 +112,7 @@ function JobView({ job }: { job: Job }) {
               <Phone /> Call
             </a>
           </Button>
-          {wa && (
-            <Button variant="outline" asChild>
-              <a href={wa} target="_blank" rel="noreferrer">
-                <MessageCircle /> WhatsApp
-              </a>
-            </Button>
-          )}
+          {wa && <WhatsAppMenu phone={job.phone} name={job.customerName} job={job} />}
           <Button variant="outline" onClick={() => void copy()}>
             <Copy /> Copy
           </Button>
@@ -247,6 +238,10 @@ function JobView({ job }: { job: Job }) {
         </div>
       </div>
 
+      {(can("billing") || can("jobs") || can("leads")) && <BillingPanel job={job} />}
+
+      {!job.isDeleted && <JobPhotos job={job} />}
+
       {job.notes && (
         <Card>
           <CardHeader>
@@ -254,6 +249,47 @@ function JobView({ job }: { job: Job }) {
           </CardHeader>
           <CardContent>
             <p className="whitespace-pre-wrap text-sm">{job.notes}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {(linked.length > 0 || job.inspectionNeeded) && (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between">
+            <CardTitle>Inspections</CardTitle>
+            {can("inspections") && !job.isDeleted && (
+              <Button variant="outline" size="sm" onClick={() => setBooking(true)}>
+                Book inspection
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
+            {linked.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                This job needs an inspection before it's priced. None booked yet.
+              </p>
+            ) : (
+              <ul className="divide-y">
+                {linked.map((i) => (
+                  <li key={i.id}>
+                    <Link
+                      to="/inspections/$inspectionId"
+                      params={{ inspectionId: i.id }}
+                      className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2 text-sm hover:text-primary"
+                    >
+                      <span className="font-mono text-xs text-muted-foreground">{i.id}</span>
+                      <span className="flex-1">
+                        {INSPECTION_TYPES.find((t) => t.value === i.type)?.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{i.date}</span>
+                      <Badge tone={i.status === "completed" ? "success" : "warning"}>
+                        {INSPECTION_STATUS_LABEL[i.status]}
+                      </Badge>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       )}
@@ -277,6 +313,7 @@ function JobView({ job }: { job: Job }) {
       </Card>
 
       {editing && <JobEditor job={job} onClose={() => setEditing(false)} />}
+      {booking && <BookInspection job={job} onClose={() => setBooking(false)} />}
     </div>
   );
 }

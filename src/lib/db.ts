@@ -3,7 +3,14 @@
 // consistent no matter which screen made the change. Writes are batched so
 // a job and its customer are saved together, and they queue while offline.
 
-import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  increment,
+  runTransaction,
+  writeBatch,
+} from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { logAudit } from "./audit";
 import { addMonths, newSiteId, type Customer, type Site } from "./customer";
@@ -19,6 +26,19 @@ import {
   type JobStatus,
 } from "./job";
 import { phoneKey, toE164 } from "./phone";
+import type { Inspection } from "./inspection";
+import {
+  docNumber,
+  paidOf,
+  paymentStatusFor,
+  profitOf,
+  sumExpenses,
+  type Expense,
+  type Payment,
+  type PaymentMethod,
+} from "./billing";
+import { roundMoney } from "./currency";
+import { priceSummary } from "./pricing";
 
 const now = () => new Date().toISOString();
 const me = () => auth.currentUser?.uid ?? "";
@@ -123,6 +143,7 @@ export async function saveJob(
     ...(!existing && draft.status !== "new" ? statusStamps(draft.status, ts) : {}),
   });
 
+  job.paymentStatus = paymentStatusFor(job.total, paidOf(job));
   batch.set(doc(db, "jobs", job.id), job);
   await batch.commit();
   logAudit({
@@ -230,4 +251,242 @@ export async function saveCustomer(c: Customer): Promise<void> {
     entityId: c.id,
     summary: `Updated customer ${c.name.trim()}`,
   });
+}
+
+// ── Inspections ──────────────────────────────────────────────────────────────
+
+/** Creates or updates an inspection. A linked lead is marked as needing one. */
+export async function saveInspection(i: Inspection, isNew: boolean): Promise<void> {
+  const batch = writeBatch(db);
+  const ts = now();
+  batch.set(doc(db, "inspections", i.id), {
+    ...i,
+    createdAt: isNew ? ts : i.createdAt,
+    createdBy: isNew ? me() : i.createdBy,
+    updatedAt: ts,
+  });
+  if (isNew && i.jobId) {
+    batch.update(doc(db, "jobs", i.jobId), {
+      inspectionNeeded: true,
+      updatedAt: ts,
+      updatedBy: me(),
+    });
+  }
+  await batch.commit();
+  if (isNew) {
+    logAudit({
+      action: "inspection.create",
+      entity: "inspection",
+      entityId: i.id,
+      summary: `Booked inspection ${i.id} for ${i.customerName}`,
+    });
+  }
+}
+
+export async function setInspectionStatus(
+  i: Inspection,
+  status: Inspection["status"],
+): Promise<void> {
+  const batch = writeBatch(db);
+  const ts = now();
+  batch.update(doc(db, "inspections", i.id), {
+    status,
+    updatedAt: ts,
+    completedAt: status === "completed" ? ts : null,
+  });
+  await batch.commit();
+  logAudit({
+    action: "inspection.status",
+    entity: "inspection",
+    entityId: i.id,
+    summary: `${i.id} marked ${status}`,
+  });
+}
+
+/** Copies the measured tanks and sumps to the job, re-pricing it, and clears its inspection flag. */
+export async function applyInspectionToJob(i: Inspection, job: Job): Promise<void> {
+  const ts = now();
+  const f = i.findings;
+  const updated = withTotals({
+    ...job,
+    tanks: i.tanks.length ? i.tanks : job.tanks,
+    sumps: i.sumps.length ? i.sumps : job.sumps,
+    ladderNeeded: i.type === "tank" ? f.ladderRequired || job.ladderNeeded : job.ladderNeeded,
+    inspectionNeeded: false,
+  });
+  const batch = writeBatch(db);
+  batch.update(doc(db, "jobs", job.id), {
+    tanks: updated.tanks,
+    sumps: updated.sumps,
+    ladderNeeded: updated.ladderNeeded,
+    inspectionNeeded: false,
+    subtotal: updated.subtotal,
+    total: Math.min(updated.total, updated.subtotal),
+    updatedAt: ts,
+    updatedBy: me(),
+  });
+  batch.update(doc(db, "inspections", i.id), { appliedToJobAt: ts, updatedAt: ts });
+  await batch.commit();
+  logAudit({
+    action: "job.update",
+    entity: "job",
+    entityId: job.id,
+    summary: `Applied measurements from ${i.id} to ${job.id}`,
+  });
+}
+
+// ── Billing ──────────────────────────────────────────────────────────────────
+
+export interface PaymentInput {
+  amount: number;
+  method: PaymentMethod;
+  date: string;
+  reference: string;
+  note: string;
+}
+
+function paymentDoc(job: Job, p: PaymentInput, ts: string) {
+  const ref = doc(collection(db, "payments"));
+  const payment: Payment = {
+    id: ref.id,
+    jobId: job.id,
+    customerId: job.customerId,
+    customerName: job.customerName,
+    amount: roundMoney(p.amount),
+    method: p.method,
+    date: p.date,
+    reference: p.reference.trim(),
+    note: p.note.trim(),
+    receivedBy: me(),
+    createdAt: ts,
+    createdBy: me(),
+    voided: false,
+    voidReason: "",
+    voidedAt: null,
+  };
+  return { ref, payment };
+}
+
+/** Records money received against a job and updates its balance. */
+export async function recordPayment(job: Job, p: PaymentInput): Promise<Payment> {
+  const ts = now();
+  const { ref, payment } = paymentDoc(job, p, ts);
+  const batch = writeBatch(db);
+  batch.set(ref, payment);
+  batch.update(doc(db, "jobs", job.id), {
+    paidAmount: increment(payment.amount),
+    paymentStatus: paymentStatusFor(job.total, paidOf(job) + payment.amount),
+    updatedAt: ts,
+    updatedBy: me(),
+  });
+  await batch.commit();
+  logAudit({
+    action: "payment.create",
+    entity: "payment",
+    entityId: ref.id,
+    summary: `Received ${payment.amount} (${payment.method}) on ${job.id}`,
+  });
+  return payment;
+}
+
+export async function voidPayment(payment: Payment, job: Job, reason: string): Promise<void> {
+  const ts = now();
+  const batch = writeBatch(db);
+  batch.update(doc(db, "payments", payment.id), { voided: true, voidReason: reason, voidedAt: ts });
+  batch.update(doc(db, "jobs", job.id), {
+    paidAmount: increment(-payment.amount),
+    paymentStatus: paymentStatusFor(job.total, paidOf(job) - payment.amount),
+    updatedAt: ts,
+    updatedBy: me(),
+  });
+  await batch.commit();
+  logAudit({
+    action: "payment.void",
+    entity: "payment",
+    entityId: payment.id,
+    summary: `Voided ${payment.amount} on ${job.id}: ${reason}`,
+  });
+}
+
+export interface Settlement {
+  discount: number;
+  expenses: Expense[];
+  finalPayment: PaymentInput | null;
+  recleanMonths: number;
+}
+
+/**
+ * Closes a job the way the legacy "settlement" did: final discount, the
+ * expense breakdown and profit, an optional final payment, and completion.
+ */
+export async function settleJob(job: Job, s: Settlement): Promise<Job> {
+  const ts = now();
+  const summary = priceSummary({ ...job, discount: s.discount });
+  const expenses = s.expenses.filter((e) => e.category.trim() && e.amount > 0);
+  const batch = writeBatch(db);
+  let paid = paidOf(job);
+  if (s.finalPayment && s.finalPayment.amount > 0) {
+    const { ref, payment } = paymentDoc(job, s.finalPayment, ts);
+    batch.set(ref, payment);
+    paid = roundMoney(paid + payment.amount);
+  }
+  const patch = {
+    status: "completed" as const,
+    completedAt: ts,
+    discount: summary.discount,
+    subtotal: summary.subtotal,
+    total: summary.total,
+    expenses,
+    expenseTotal: sumExpenses(expenses),
+    profit: profitOf(summary.total, expenses),
+    paidAmount: paid,
+    paymentStatus: paymentStatusFor(summary.total, paid),
+    updatedAt: ts,
+    updatedBy: me(),
+  };
+  batch.update(doc(db, "jobs", job.id), patch);
+  if (job.customerId) {
+    const served = job.endDate || job.date || isoDate();
+    batch.update(doc(db, "customers", job.customerId), {
+      lastServiceDate: served,
+      nextDueDate: addMonths(served, s.recleanMonths),
+      updatedAt: ts,
+    });
+  }
+  await batch.commit();
+  logAudit({
+    action: "job.settle",
+    entity: "job",
+    entityId: job.id,
+    summary: `Settled ${job.id}: total ${patch.total}, expenses ${patch.expenseTotal}, profit ${patch.profit}`,
+  });
+  return { ...job, ...patch };
+}
+
+/**
+ * Gives a job its quote or invoice number, issued in order from
+ * `counters/documents`. Needs a connection: numbers must never repeat.
+ */
+export async function issueNumber(
+  job: Job,
+  kind: "quote" | "invoice",
+  startAt: number,
+): Promise<string> {
+  const existing = kind === "quote" ? job.quoteNo : job.invoiceNo;
+  if (existing) return existing;
+  const counterRef = doc(db, "counters", "documents");
+  const no = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(counterRef);
+    const data = snap.data() as { quote?: number; invoice?: number } | undefined;
+    const next = Math.max(data?.[kind] ?? startAt, startAt);
+    tx.set(counterRef, { quote: data?.quote ?? 0, invoice: data?.invoice ?? 0, [kind]: next + 1 });
+    const number = docNumber(kind === "quote" ? "Q" : "INV", next);
+    tx.update(doc(db, "jobs", job.id), {
+      ...(kind === "quote" ? { quoteNo: number } : { invoiceNo: number, invoiceDate: isoDate() }),
+      updatedAt: now(),
+      updatedBy: me(),
+    });
+    return number;
+  });
+  return no;
 }

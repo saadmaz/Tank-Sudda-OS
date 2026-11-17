@@ -69,11 +69,14 @@ sequenceDiagram
 
 ### Business data
 
-| Collection         | Holds                                                                               | Written by                             |
-| ------------------ | ----------------------------------------------------------------------------------- | -------------------------------------- |
-| `settings/general` | Prices, locations, equipment, terms, targets, document numbering                    | Settings (Manager+)                    |
-| `customers/{id}`   | Profile, phones (with a canonical `phoneKey`), sites, last and next cleaning        | Job editor, customer page              |
-| `jobs/{ref}`       | One piece of work from lead to completion; the id is the reference `TS-YYMMDD-XXXX` | Leads, jobs, field crews (status only) |
+| Collection           | Holds                                                                               | Written by                             |
+| -------------------- | ----------------------------------------------------------------------------------- | -------------------------------------- |
+| `settings/general`   | Prices, locations, equipment, terms, targets, document numbering                    | Settings (Manager+)                    |
+| `customers/{id}`     | Profile, phones (with a canonical `phoneKey`), sites, last and next cleaning        | Job editor, customer page              |
+| `inspections/{ref}`  | Site checklist and measurements, linked to a job; `IN-YYMMDD-XXXX`                  | Inspections (field and office)         |
+| `payments/{id}`      | Money received against a job; voided, never deleted                                 | Job page, settlement, billing          |
+| `counters/documents` | Next quote and invoice numbers, only ever increasing                                | Quote and invoice buttons              |
+| `jobs/{ref}`         | One piece of work from lead to completion; the id is the reference `TS-YYMMDD-XXXX` | Leads, jobs, field crews (status only) |
 
 Leads and jobs share the `jobs` collection ([ADR-0005](adr/0005-leads-and-jobs-share-one-collection.md)). Each job stores its own prices and a computed `subtotal` and `total`, so reports never re-price old work. Every write goes through `src/lib/db.ts`, which batches the job with its customer and appends an audit entry.
 

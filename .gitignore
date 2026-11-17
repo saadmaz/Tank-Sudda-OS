@@ -41,3 +41,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Legacy data exports contain customer data — never commit them
+legacy-export*.json

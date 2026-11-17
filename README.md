@@ -64,7 +64,7 @@ It replaces the legacy single-file operations app ([ADR-0001](docs/adr/0001-rebu
 | At a glance      |                                                 |
 | ---------------- | ----------------------------------------------- |
 | **Organisation** | Tank Sudda (Pvt) Ltd                            |
-| **Status**       | In development                                  |
+| **Status**       | Ready for launch                                |
 | **Production**   | [os.tanksudda.com](https://os.tanksudda.com)    |
 | **Contact**      | [info@tanksudda.com](mailto:info@tanksudda.com) |
 | **Maintainer**   | [Saad Mazhar](https://github.com/saadmaz)       |
@@ -156,19 +156,20 @@ Vite prints the local address when the server starts. Point `VITE_FIREBASE_*` at
 <details>
 <summary><strong>All scripts</strong></summary>
 
-| Command                           | Description                                           |
-| --------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                     | Start the development server                          |
-| `npm run build`                   | Production build: client, server bundle and build id  |
-| `npm start`                       | Run the production server (`server.mjs`) on port 8080 |
-| `npm run deploy`                  | Build and deploy to Cloudflare from your machine      |
-| `npm run lint`                    | Lint with ESLint (includes Prettier rules)            |
-| `npm run typecheck`               | Type-check with `tsc`                                 |
-| `npm run format` / `format:check` | Format with Prettier, or check without writing        |
-| `npm test`                        | Unit tests (Vitest)                                   |
-| `npm run test:rules`              | Firestore rules tests (starts the emulator)           |
-| `npm run seed:admin`              | Create the first SuperAdmin from `.env`               |
-| `npm run deploy:rules`            | Deploy Firestore and Storage rules                    |
+| Command                                   | Description                                                                       |
+| ----------------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run dev`                             | Start the development server                                                      |
+| `npm run build`                           | Production build: client, server bundle and build id                              |
+| `npm start`                               | Run the production server (`server.mjs`) on port 8080                             |
+| `npm run deploy`                          | Build and deploy to Cloudflare from your machine                                  |
+| `npm run lint`                            | Lint with ESLint (includes Prettier rules)                                        |
+| `npm run typecheck`                       | Type-check with `tsc`                                                             |
+| `npm run format` / `format:check`         | Format with Prettier, or check without writing                                    |
+| `npm test`                                | Unit tests (Vitest)                                                               |
+| `npm run test:rules`                      | Firestore rules tests (starts the emulator)                                       |
+| `npm run seed:admin`                      | Create the first SuperAdmin from `.env`                                           |
+| `npm run deploy:rules`                    | Deploy Firestore and Storage rules                                                |
+| `npm run legacy:export` / `legacy:import` | Move data from the legacy app (see the [runbook](docs/runbooks/legacy-import.md)) |
 
 </details>
 

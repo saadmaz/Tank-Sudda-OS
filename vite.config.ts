@@ -24,6 +24,15 @@ export default defineConfig({
   define: {
     __BUILD_ID__: JSON.stringify(readBuildId()),
   },
+  resolve: {
+    // jsPDF imports these only for HTML and SVG rendering, which no document uses.
+    alias: Object.fromEntries(
+      ["canvg", "html2canvas", "dompurify"].map((m) => [
+        m,
+        fileURLToPath(new URL("./src/lib/empty-module.ts", import.meta.url)),
+      ]),
+    ),
+  },
   build: {
     rolldownOptions: {
       output: {

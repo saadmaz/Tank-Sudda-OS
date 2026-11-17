@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { collection, query, where } from "firebase/firestore";
-import { ArrowLeft, MessageCircle, Phone, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Phone, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { JobEditor } from "@/components/job-editor";
+import { WhatsAppMenu } from "@/components/whatsapp-menu";
 import { JobStatusBadge } from "@/components/job-status";
 import { EmptyState } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
@@ -112,11 +113,12 @@ function CustomerView({ customer }: { customer: Customer }) {
             </a>
           </Button>
           {wa && (
-            <Button variant="outline" asChild>
-              <a href={wa} target="_blank" rel="noreferrer">
-                <MessageCircle /> WhatsApp
-              </a>
-            </Button>
+            <WhatsAppMenu
+              phone={customer.phone}
+              name={customer.name}
+              job={jobs.find((j) => j.status !== "cancelled")}
+              only={["reminder", "review", "followUp", "payment"]}
+            />
           )}
           <Button onClick={() => setNewJob(true)}>
             <Plus /> New lead

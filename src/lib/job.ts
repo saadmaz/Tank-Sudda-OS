@@ -2,6 +2,8 @@
 // Jobs are two views of the same `jobs` collection: a lead is a job that is
 // still `new` or `quoted`. Pure: no firebase/react imports.
 
+import type { JobBilling } from "./billing";
+import type { JobPhoto } from "./photos";
 import { formatLKR } from "./currency";
 import { formatPhone } from "./phone";
 import { describeWork, priceSummary, type AddOn, type SumpItem, type TankItem } from "./pricing";
@@ -81,7 +83,8 @@ export const CANCEL_REASONS = [
   "Other",
 ] as const;
 
-export interface Job {
+/** Billing fields (Phase 5) are optional: older jobs don't have them. */
+export interface Job extends Partial<JobBilling> {
   /** Human-readable reference, also the document id, e.g. TS-261118-K7Q2. */
   id: string;
   status: JobStatus;
@@ -135,6 +138,7 @@ export interface Job {
 
   isDeleted: boolean;
   deletedAt: string | null;
+  photos?: JobPhoto[];
 }
 
 /** Fields the editor manages; ids, audit fields and totals are filled on save. */
