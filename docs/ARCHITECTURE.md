@@ -44,6 +44,31 @@ sequenceDiagram
   F-->>B: snapshots as data changes
 ```
 
+## Sign-in
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant S as Server (loginFn)
+  participant F as Firestore
+  participant A as Firebase Auth
+  B->>S: username + PIN
+  S->>F: usernames/{key}, staff/{id}, staffCredentials/{id}
+  S->>S: bcrypt compare, lockout check
+  S-->>B: custom token { role, perms, name, username, mcp }
+  B->>A: signInWithCustomToken
+  B->>F: reads and writes, rules check the claims
+```
+
+| Collection              | Holds                                                         | Client access                     |
+| ----------------------- | ------------------------------------------------------------- | --------------------------------- |
+| `staff/{id}`            | Directory: name, phone, field roles, active, sign-in and role | Read when signed in               |
+| `staffCredentials/{id}` | PIN hash, failed attempts, lockout, forced PIN change         | None                              |
+| `usernames/{key}`       | Username index for sign-in                                    | None                              |
+| `auditLog/{id}`         | Append-only record of changes                                 | Manager+ read; append in own name |
+
+Changing someone's role, modules or active status revokes their refresh tokens, so the old claims stop working within an hour at most.
+
 ## Design principles
 
 - **Pure domain logic.** Anything that calculates money, prices or dates lives in `src/lib` with unit tests and no Firebase or React imports.

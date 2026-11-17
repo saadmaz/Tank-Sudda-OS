@@ -1,0 +1,56 @@
+# Deploys Firestore and Storage rules whenever they change on main, or on demand.
+# Switched on by the FIREBASE_RULES_ENABLED repository variable once the
+# FIREBASE_SERVICE_ACCOUNT_JSON secret is set (see docs/DEPLOYMENT.md).
+name: Deploy Firestore and Storage rules
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "firestore.rules"
+      - "firestore.indexes.json"
+      - "storage.rules"
+      - "firebase.json"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-rules:
+    if: vars.FIREBASE_RULES_ENABLED == 'true'
+    name: Deploy rules
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Pin npm to match the lockfile tooling
+        run: npm install -g npm@11
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write service account credentials
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' > /tmp/gcp-sa.json
+
+      # Uses the firebaserules REST API (scripts/deploy-rules.ts): the Admin SDK
+      # service account can write rules but cannot pass `firebase deploy`'s
+      # serviceusage precheck.
+      - name: Deploy rules
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-sa.json
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: npm run deploy:rules
+
+      - name: Clean up credentials
+        if: always()
+        run: rm -f /tmp/gcp-sa.json

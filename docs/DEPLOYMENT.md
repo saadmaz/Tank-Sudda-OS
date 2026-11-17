@@ -57,6 +57,19 @@ flowchart LR
 4. **Domain.** In the Worker's settings, add `os.tanksudda.com` as a custom domain.
 5. Repeat steps 2 to 4 for development with `dev.os.tanksudda.com`, then set `DEVELOPMENT_ENABLED` to `true`.
 
+## Firebase setup
+
+1. Create (or choose) the Firebase project and enable Firestore, Authentication and Storage. Custom-token sign-in needs no provider to be switched on.
+2. Add a web app and copy its config into the `VITE_FIREBASE_*` secrets; generate a service account key for the `FIREBASE_*` secrets and `FIREBASE_SERVICE_ACCOUNT_JSON`.
+3. Set the `FIREBASE_RULES_ENABLED` repository variable to `true`. [`firebase-deploy.yml`](../.github/workflows/firebase-deploy.yml) then deploys `firestore.rules` and `storage.rules` whenever they change on `main`, or on demand.
+4. From a machine with the service account in `.env`, create the first SuperAdmin once:
+
+   ```sh
+   npm run seed:admin
+   ```
+
+5. Sign in, choose a new PIN, and add everyone else under **Staff**.
+
 ## Run the production build locally
 
 ```sh
@@ -74,5 +87,5 @@ docker build -t tank-sudda-os . && docker run -p 8080:8080 --env-file .env tank-
 ## Post-deployment checks
 
 1. `/healthz` returns `ok`.
-2. The sign-in screen loads at [os.tanksudda.com](https://os.tanksudda.com).
+2. A staff member can sign in with their PIN at [os.tanksudda.com](https://os.tanksudda.com).
 3. Response headers include the Content Security Policy and `Strict-Transport-Security`.
