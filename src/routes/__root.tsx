@@ -12,6 +12,8 @@ import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "../components/ui/sonner";
+import { AuthProvider } from "../lib/auth";
+import { StoreProvider } from "../lib/store";
 
 function NotFoundComponent() {
   return (
@@ -118,8 +120,12 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <Toaster position="bottom-right" />
+      <AuthProvider>
+        <StoreProvider>
+          <Outlet />
+          <Toaster position="bottom-right" />
+        </StoreProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

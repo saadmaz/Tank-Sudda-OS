@@ -13,7 +13,7 @@ The system replaces the legacy single-file operations app (see [ADR-0001](adr/00
 | Phase | Release | Scope                                                                                                    | Status    |
 | :---: | :-----: | -------------------------------------------------------------------------------------------------------- | --------- |
 |   0   | `0.1.0` | Repository, tooling, CI, deployment pipeline and documentation                                           | Delivered |
-|   1   | `0.2.0` | Firebase, staff sign-in with PINs, roles and permissions, app shell, settings, staff management          | Planned   |
+|   1   | `0.2.0` | Firebase, staff sign-in with PINs, roles and permissions, app shell, settings, staff management          | Delivered |
 |   2   | `0.3.0` | Customers and sites, leads and jobs, the pricing engine for tanks and sumps, statuses and the trash      | Planned   |
 |   3   | `0.4.0` | Site inspections for tanks, sumps and cleaning, the inspection report, converting an inspection to a job | Planned   |
 |   4   | `0.5.0` | Scheduling calendar, multi-day jobs, crew and equipment assignment, conflict warnings                    | Planned   |
@@ -21,6 +21,19 @@ The system replaces the legacy single-file operations app (see [ADR-0001](adr/00
 |   6   | `0.7.0` | Dashboard and targets, daily ledger, reconciliation, analytics and CSV export                            | Planned   |
 |   7   | `0.8.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Planned   |
 |   —   | `1.0.0` | Legacy data import and cut-over from the single-file app                                                 | Planned   |
+
+## Roles
+
+| Role       | Typical modules                                                   | Can manage staff |
+| ---------- | ----------------------------------------------------------------- | :--------------: |
+| Technician | Dashboard, jobs, schedule                                         |        No        |
+| Supervisor | Dashboard, inspections, jobs, schedule, customers                 |        No        |
+| Office     | Dashboard, leads, inspections, jobs, schedule, customers, billing |        No        |
+| Manager    | Everything except staff and settings                              |        No        |
+| Admin      | Everything; manages people junior to them                         |       Yes        |
+| SuperAdmin | Everything, always; manages anyone                                |       Yes        |
+
+Modules are a per-person checklist; the role only sets the starting list. Field roles (supervisor, technician) are separate: anyone, with or without a sign-in, can be assigned to jobs.
 
 ## Carried over from the legacy app
 

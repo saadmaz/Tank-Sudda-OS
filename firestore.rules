@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Identity ────────────────────────────────────────────────────────────
+    // `role`, `perms` and `name` are claims minted into the custom token by
+    // loginFn (src/server/auth.ts). Changing someone's access revokes their
+    // refresh tokens, so a stale claim lasts at most one ID-token lifetime.
+    function isAuth()           { return request.auth != null && request.auth.token.role is string; }
+    function role()             { return request.auth.token.role; }
+    function uid()              { return request.auth.uid; }
+
+    function isSuperAdmin()     { return isAuth() && role() == "SuperAdmin"; }
+    function isAdmin()          { return isAuth() && role() in ["Admin", "SuperAdmin"]; }
+    function isManagerOrAbove() { return isAuth() && role() in ["Manager", "Admin", "SuperAdmin"]; }
+
+    // Mirrors hasModule() in src/lib/permissions.ts.
+    function hasModule(m) {
+      return isAuth() && (
+        isSuperAdmin() ||
+        (request.auth.token.perms is list && m in request.auth.token.perms)
+      );
+    }
+
+    // ── Staff ───────────────────────────────────────────────────────────────
+    // The directory is readable by everyone signed in (crew pickers need it);
+    // every write goes through saveStaffFn so seniority rules apply.
+    match /staff/{staffId} {
+      allow read: if isAuth();
+      allow write: if false;
+    }
+
+    // PIN hashes, lockout state and the username index never reach a browser.
+    match /staffCredentials/{staffId} { allow read, write: if false; }
+    match /usernames/{key}            { allow read, write: if false; }
+
+    // ── Settings ────────────────────────────────────────────────────────────
+    // One document, read by every screen. Only someone holding the settings
+    // module, at Manager level or above, may change it.
+    match /settings/{docId} {
+      allow read: if isAuth();
+      allow write: if docId == "general"
+        && hasModule("settings")
+        && isManagerOrAbove()
+        && request.resource.data.pricing is map
+        && request.resource.data.pricing.sumpRatePerCubicFt is number
+        && request.resource.data.locations is list
+        && request.resource.data.terms is list;
+    }
+
+    // ── Audit log ───────────────────────────────────────────────────────────
+    // Append-only. A client may add an entry only in its own name.
+    match /auditLog/{entryId} {
+      allow read: if isManagerOrAbove();
+      allow create: if isAuth()
+        && request.resource.data.actorId == uid()
+        && request.resource.data.at is string
+        && request.resource.data.action is string;
+      allow update, delete: if false;
+    }
+
+    // ── Default deny ────────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
