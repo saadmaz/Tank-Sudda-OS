@@ -21,6 +21,7 @@ import {
 import { formatLKR } from "@/lib/currency";
 import { db } from "@/lib/firebase";
 import { isoDate, type Job } from "@/lib/job";
+import { localDay } from "@/lib/reports";
 import { useLiveQuery, useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -95,7 +96,7 @@ function Outstanding() {
       ) : (
         <Card className="divide-y">
           {list.map((j) => {
-            const age = j.completedAt ? daysSince(j.completedAt.slice(0, 10)) : 0;
+            const age = j.completedAt ? daysSince(localDay(j.completedAt)) : 0;
             return (
               <div key={j.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 p-3 text-sm">
                 <Link to="/jobs/$jobId" params={{ jobId: j.id }} className="min-w-0 flex-1">
