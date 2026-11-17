@@ -31,6 +31,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- Staff sign-in with a username and 4-digit PIN, checked on the server against a bcrypt hash, with an escalating lockout after five wrong PINs and a forced PIN change after an administrator issues or resets one.
+- Roles (Technician, Supervisor, Office, Manager, Admin, SuperAdmin) and per-module permissions carried in the sign-in token, enforced by Firestore rules and mirrored in the UI.
+- App shell: sidebar navigation, a mobile menu, an offline indicator and an account menu with change PIN and sign out.
+- Staff screen: add and edit people, their field roles (supervisor, technician), colour, active status, sign-in, role and modules, and reset a PIN. Seniority rules stop anyone editing a peer or granting a role above their own.
+- Firestore and Storage rules with an emulator test suite (`npm run test:rules`), a rules deploy workflow and `npm run seed:admin` to create the first SuperAdmin.
+- Offline cache for Firestore so screens stay readable and changes queue without a signal.
+
 ## [0.1.0] - 2026-11-17
 
 ### Added
