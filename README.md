@@ -166,6 +166,9 @@ Vite prints the local address when the server starts. Point `VITE_FIREBASE_*` at
 | `npm run typecheck`               | Type-check with `tsc`                                 |
 | `npm run format` / `format:check` | Format with Prettier, or check without writing        |
 | `npm test`                        | Unit tests (Vitest)                                   |
+| `npm run test:rules`              | Firestore rules tests (starts the emulator)           |
+| `npm run seed:admin`              | Create the first SuperAdmin from `.env`               |
+| `npm run deploy:rules`            | Deploy Firestore and Storage rules                    |
 
 </details>
 
@@ -182,6 +185,7 @@ The Firebase web config and the server's service account are set in `.env`. Busi
 | ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | `VITE_FIREBASE_*`                                                      | Firebase web app config (public identifiers compiled into the client) |
 | `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Service account for `firebase-admin` on the server. **Secret**        |
+| `SUPERADMIN_*`                                                         | First SuperAdmin, used once by `seed:admin`. **Secret**               |
 | `VITE_SENTRY_DSN`                                                      | Optional error reporting                                              |
 
 Where each value is set, and which are secret: [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
@@ -200,7 +204,7 @@ Where each value is set, and which are secret: [docs/CONFIGURATION.md](docs/CONF
 ├── .github/workflows/       # CI and deployment
 ├── docs/                    # Architecture, configuration, deployment, features, ADRs, runbooks
 ├── public/                  # Static assets and brand marks
-├── scripts/                 # Build helpers
+├── scripts/                 # Build helpers, seeding, rules deploy and rules tests
 ├── src/
 │   ├── components/          # Feature components and Radix-based UI primitives
 │   ├── hooks/               # Shared hooks
@@ -208,6 +212,8 @@ Where each value is set, and which are secret: [docs/CONFIGURATION.md](docs/CONF
 │   ├── routes/              # File-based routes: staff app (_app.*), health check, public API
 │   ├── server/              # Server-only modules
 │   └── styles.css           # Design tokens and global styles
+├── firestore.rules          # Data-layer security rules
+├── storage.rules            # Storage security rules
 ├── worker/                  # Cloudflare Worker that fronts the container
 ├── Dockerfile               # Production container image
 ├── server.mjs               # Production Node server
