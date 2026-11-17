@@ -1,0 +1,84 @@
+# Builds the app and deploys it to Cloudflare: a Worker in front of the Node
+# server running in a Cloudflare Container (see Dockerfile and wrangler.jsonc).
+# main deploys to production once the CLOUDFLARE_ENABLED repository variable is
+# "true"; develop deploys to development once DEVELOPMENT_ENABLED is "true".
+name: Deploy
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: >-
+      (github.ref_name == 'main' && vars.CLOUDFLARE_ENABLED == 'true') ||
+      (github.ref_name == 'develop' && vars.DEVELOPMENT_ENABLED == 'true')
+    name: ${{ github.ref_name == 'main' && 'Production' || 'Development' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
+      url: ${{ vars.APP_URL }}
+    env:
+      APP_URL: ${{ vars.APP_URL }}
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Pin npm to match the lockfile tooling
+        run: npm install -g npm@11
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+        run: npm run build
+
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        env:
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy ${{ github.ref_name == 'develop' && '--env development' || '' }}
+          secrets: |
+            FIREBASE_PROJECT_ID
+            FIREBASE_CLIENT_EMAIL
+            FIREBASE_PRIVATE_KEY
+
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 20); do
+            body=$(curl -s --max-time 30 "$APP_URL/healthz" || echo ERR)
+            echo "$APP_URL/healthz -> $body"
+            [ "$body" = "ok" ] && exit 0
+            sleep 15
+          done
+          echo "::error::$APP_URL/healthz did not return ok"
+          exit 1
