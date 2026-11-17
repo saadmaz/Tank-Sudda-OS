@@ -35,9 +35,13 @@ export const adminAuth = getAuth();
 export const adminDb = getFirestore();
 
 // REST keeps each read an ordinary HTTPS request instead of a long-lived gRPC
-// stream, which suits a container that sleeps between shifts.
-if (!usingEmulator) {
-  adminDb.settings({ preferRest: true, ignoreUndefinedProperties: true });
-} else {
-  adminDb.settings({ ignoreUndefinedProperties: true });
+// stream, which suits a container that sleeps between shifts. settings() may
+// only run once per process, and dev-server reloads re-run this module.
+const g = globalThis as unknown as { __tsAdminDbConfigured?: boolean };
+if (!g.__tsAdminDbConfigured) {
+  g.__tsAdminDbConfigured = true;
+  adminDb.settings({
+    ignoreUndefinedProperties: true,
+    ...(usingEmulator ? {} : { preferRest: true }),
+  });
 }

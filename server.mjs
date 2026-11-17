@@ -34,7 +34,7 @@ const CSP = [
   // Firebase SDKs: Firestore, Auth, Storage and realtime WebSockets.
   "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebase.google.com https://*.appspot.com" +
     EMULATOR_CONNECT_SRC,
-  "img-src 'self' data: blob: https://storage.googleapis.com https://*.appspot.com" +
+  "img-src 'self' data: blob: https://storage.googleapis.com https://firebasestorage.googleapis.com https://*.appspot.com" +
     EMULATOR_IMG_SRC,
   "font-src 'self' https://fonts.gstatic.com",
   "frame-src 'none'",
