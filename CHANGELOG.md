@@ -31,6 +31,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- Leads and Jobs: one record follows the work from new lead through quoted, scheduled and in progress to completed or cancelled, with only legal status moves allowed (in the app and in Firestore rules).
+- Job editor: customer autofill by name or phone, recognising an existing customer even when the number is typed differently; saved sites; location with its transport fee; any number of overhead tanks (standard or custom size) and underground sumps priced by volume; ladder, add-ons and a discount capped at the subtotal; status, source, dates (including multi-day), crew and equipment; and a live price breakdown.
+- Pricing engine shared by every screen, with prices captured on the job so changing Settings never alters an existing quote.
+- Job page with the price breakdown, advance amount, customer, schedule, crew, notes and history; call, WhatsApp and copy-job-details actions.
+- Cancellation with a reason, a trash with restore, and permanent deletion for managers.
+- Customers: profiles with phones, email, type, notes, reminder consent, any number of sites with access notes, and every job they've had. Completing a job records the last service and sets the next cleaning due date from the re-clean interval.
+- Search, status and inside/outside Colombo filters on every list, with phone layouts.
+
 ## [0.2.0] - 2026-11-18
 
 ### Added
@@ -46,6 +56,7 @@
 
 ### Changed
 
+- Route files are exempt from the fast-refresh lint rule, since they must export `Route`.
 - Dependabot no longer opens npm major-version upgrades; those are planned as their own change.
 
 ## [0.1.0] - 2026-11-17
