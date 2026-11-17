@@ -12,6 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { SettleDialog } from "./billing-dialogs";
 import { JobStatusBadge } from "./job-status";
 import { Button } from "./ui/button";
 import {
@@ -61,11 +62,15 @@ import { useStore } from "@/lib/store";
 /** Status badge that opens the legal next steps for the job. */
 export function StatusMenu({ job, disabled }: { job: Job; disabled?: boolean }) {
   const { settings } = useStore();
+  const { can } = useAuth();
   const [cancelling, setCancelling] = useState(false);
+  const [settling, setSettling] = useState(false);
   const next = JOB_TRANSITIONS[job.status];
 
   const move = async (to: JobStatus) => {
     if (to === "cancelled") return setCancelling(true);
+    // The office closes a job through the settlement; crews just mark it done.
+    if (to === "completed" && (can("billing") || can("leads"))) return setSettling(true);
     if (to === "scheduled" && !job.date) {
       toast.error("Set a date first: edit the job and choose when the work happens.");
       return;
@@ -100,6 +105,7 @@ export function StatusMenu({ job, disabled }: { job: Job; disabled?: boolean }) 
         </DropdownMenuContent>
       </DropdownMenu>
       {cancelling && <CancelDialog job={job} onClose={() => setCancelling(false)} />}
+      {settling && <SettleDialog job={job} onClose={() => setSettling(false)} />}
     </>
   );
 }
