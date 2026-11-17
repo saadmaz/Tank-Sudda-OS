@@ -21,3 +21,4 @@ An architecture decision record (ADR) captures one significant technical decisio
 | [0002](0002-firestore-as-the-single-source-of-truth.md)    | Firestore as the single source of truth    | Accepted |
 | [0003](0003-staff-sign-in-with-a-pin-and-custom-tokens.md) | Staff sign-in with a PIN and custom tokens | Accepted |
 | [0004](0004-host-on-cloudflare.md)                         | Host on Cloudflare                         | Accepted |
+| [0005](0005-leads-and-jobs-share-one-collection.md)        | Leads and jobs share one collection        | Accepted |

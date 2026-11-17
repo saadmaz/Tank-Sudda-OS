@@ -14,15 +14,17 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as ChangePinRouteImport } from './routes/change-pin'
 import { Route as HealthzRouteImport } from './routes/healthz'
 import { Route as AppBillingRouteImport } from './routes/_app.billing'
-import { Route as AppCustomersRouteImport } from './routes/_app.customers'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppInspectionsRouteImport } from './routes/_app.inspections'
-import { Route as AppJobsRouteImport } from './routes/_app.jobs'
 import { Route as AppLeadsRouteImport } from './routes/_app.leads'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppScheduleRouteImport } from './routes/_app.schedule'
 import { Route as AppSettingsRouteImport } from './routes/_app.settings'
 import { Route as AppStaffRouteImport } from './routes/_app.staff'
+import { Route as AppCustomersIndexRouteImport } from './routes/_app.customers.index'
+import { Route as AppCustomersCustomerIdRouteImport } from './routes/_app.customers.$customerId'
+import { Route as AppJobsIndexRouteImport } from './routes/_app.jobs.index'
+import { Route as AppJobsJobIdRouteImport } from './routes/_app.jobs.$jobId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -48,11 +50,6 @@ const AppBillingRoute = AppBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCustomersRoute = AppCustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -61,11 +58,6 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
 const AppInspectionsRoute = AppInspectionsRouteImport.update({
   id: '/inspections',
   path: '/inspections',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppJobsRoute = AppJobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLeadsRoute = AppLeadsRouteImport.update({
@@ -93,36 +85,60 @@ const AppStaffRoute = AppStaffRouteImport.update({
   path: '/staff',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCustomersIndexRoute = AppCustomersIndexRouteImport.update({
+  id: '/customers/',
+  path: '/customers/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCustomersCustomerIdRoute = AppCustomersCustomerIdRouteImport.update({
+  id: '/customers/$customerId',
+  path: '/customers/$customerId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJobsIndexRoute = AppJobsIndexRouteImport.update({
+  id: '/jobs/',
+  path: '/jobs/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJobsJobIdRoute = AppJobsJobIdRouteImport.update({
+  id: '/jobs/$jobId',
+  path: '/jobs/$jobId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/change-pin': typeof ChangePinRoute
   '/healthz': typeof HealthzRoute
   '/billing': typeof AppBillingRoute
-  '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/inspections': typeof AppInspectionsRoute
-  '/jobs': typeof AppJobsRoute
   '/leads': typeof AppLeadsRoute
   '/reports': typeof AppReportsRoute
   '/schedule': typeof AppScheduleRoute
   '/settings': typeof AppSettingsRoute
   '/staff': typeof AppStaffRoute
+  '/customers/$customerId': typeof AppCustomersCustomerIdRoute
+  '/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/customers/': typeof AppCustomersIndexRoute
+  '/jobs/': typeof AppJobsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/change-pin': typeof ChangePinRoute
   '/healthz': typeof HealthzRoute
   '/billing': typeof AppBillingRoute
-  '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/inspections': typeof AppInspectionsRoute
-  '/jobs': typeof AppJobsRoute
   '/leads': typeof AppLeadsRoute
   '/reports': typeof AppReportsRoute
   '/schedule': typeof AppScheduleRoute
   '/settings': typeof AppSettingsRoute
   '/staff': typeof AppStaffRoute
+  '/customers/$customerId': typeof AppCustomersCustomerIdRoute
+  '/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/customers': typeof AppCustomersIndexRoute
+  '/jobs': typeof AppJobsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -131,15 +147,17 @@ export interface FileRoutesById {
   '/change-pin': typeof ChangePinRoute
   '/healthz': typeof HealthzRoute
   '/_app/billing': typeof AppBillingRoute
-  '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/inspections': typeof AppInspectionsRoute
-  '/_app/jobs': typeof AppJobsRoute
   '/_app/leads': typeof AppLeadsRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/schedule': typeof AppScheduleRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/staff': typeof AppStaffRoute
+  '/_app/customers/$customerId': typeof AppCustomersCustomerIdRoute
+  '/_app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/_app/customers/': typeof AppCustomersIndexRoute
+  '/_app/jobs/': typeof AppJobsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -148,30 +166,34 @@ export interface FileRouteTypes {
     | '/change-pin'
     | '/healthz'
     | '/billing'
-    | '/customers'
     | '/dashboard'
     | '/inspections'
-    | '/jobs'
     | '/leads'
     | '/reports'
     | '/schedule'
     | '/settings'
     | '/staff'
+    | '/customers/$customerId'
+    | '/jobs/$jobId'
+    | '/customers/'
+    | '/jobs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/change-pin'
     | '/healthz'
     | '/billing'
-    | '/customers'
     | '/dashboard'
     | '/inspections'
-    | '/jobs'
     | '/leads'
     | '/reports'
     | '/schedule'
     | '/settings'
     | '/staff'
+    | '/customers/$customerId'
+    | '/jobs/$jobId'
+    | '/customers'
+    | '/jobs'
   id:
     | '__root__'
     | '/'
@@ -179,15 +201,17 @@ export interface FileRouteTypes {
     | '/change-pin'
     | '/healthz'
     | '/_app/billing'
-    | '/_app/customers'
     | '/_app/dashboard'
     | '/_app/inspections'
-    | '/_app/jobs'
     | '/_app/leads'
     | '/_app/reports'
     | '/_app/schedule'
     | '/_app/settings'
     | '/_app/staff'
+    | '/_app/customers/$customerId'
+    | '/_app/jobs/$jobId'
+    | '/_app/customers/'
+    | '/_app/jobs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -234,13 +258,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBillingRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/customers': {
-      id: '/_app/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof AppCustomersRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -253,13 +270,6 @@ declare module '@tanstack/react-router' {
       path: '/inspections'
       fullPath: '/inspections'
       preLoaderRoute: typeof AppInspectionsRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/jobs': {
-      id: '/_app/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof AppJobsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/leads': {
@@ -297,33 +307,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStaffRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/customers/': {
+      id: '/_app/customers/'
+      path: '/customers'
+      fullPath: '/customers/'
+      preLoaderRoute: typeof AppCustomersIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/customers/$customerId': {
+      id: '/_app/customers/$customerId'
+      path: '/customers/$customerId'
+      fullPath: '/customers/$customerId'
+      preLoaderRoute: typeof AppCustomersCustomerIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/jobs/': {
+      id: '/_app/jobs/'
+      path: '/jobs'
+      fullPath: '/jobs/'
+      preLoaderRoute: typeof AppJobsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/jobs/$jobId': {
+      id: '/_app/jobs/$jobId'
+      path: '/jobs/$jobId'
+      fullPath: '/jobs/$jobId'
+      preLoaderRoute: typeof AppJobsJobIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppBillingRoute: typeof AppBillingRoute
-  AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppInspectionsRoute: typeof AppInspectionsRoute
-  AppJobsRoute: typeof AppJobsRoute
   AppLeadsRoute: typeof AppLeadsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppScheduleRoute: typeof AppScheduleRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStaffRoute: typeof AppStaffRoute
+  AppCustomersCustomerIdRoute: typeof AppCustomersCustomerIdRoute
+  AppJobsJobIdRoute: typeof AppJobsJobIdRoute
+  AppCustomersIndexRoute: typeof AppCustomersIndexRoute
+  AppJobsIndexRoute: typeof AppJobsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBillingRoute: AppBillingRoute,
-  AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppInspectionsRoute: AppInspectionsRoute,
-  AppJobsRoute: AppJobsRoute,
   AppLeadsRoute: AppLeadsRoute,
   AppReportsRoute: AppReportsRoute,
   AppScheduleRoute: AppScheduleRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStaffRoute: AppStaffRoute,
+  AppCustomersCustomerIdRoute: AppCustomersCustomerIdRoute,
+  AppJobsJobIdRoute: AppJobsJobIdRoute,
+  AppCustomersIndexRoute: AppCustomersIndexRoute,
+  AppJobsIndexRoute: AppJobsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

@@ -38,6 +38,8 @@ export default tseslint.config(
   },
   {
     files: [
+      // Route files must export `Route` alongside their components.
+      "src/routes/**/*.{ts,tsx}",
       "src/components/ui/**/*.{ts,tsx}",
       "src/lib/auth.tsx",
       "src/components/status-chip.tsx",

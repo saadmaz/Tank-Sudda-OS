@@ -14,13 +14,46 @@ The system replaces the legacy single-file operations app (see [ADR-0001](adr/00
 | :---: | :-----: | -------------------------------------------------------------------------------------------------------- | --------- |
 |   0   | `0.1.0` | Repository, tooling, CI, deployment pipeline and documentation                                           | Delivered |
 |   1   | `0.2.0` | Firebase, staff sign-in with PINs, roles and permissions, app shell, settings, staff management          | Delivered |
-|   2   | `0.3.0` | Customers and sites, leads and jobs, the pricing engine for tanks and sumps, statuses and the trash      | Planned   |
+|   2   | `0.3.0` | Customers and sites, leads and jobs, the pricing engine for tanks and sumps, statuses and the trash      | Delivered |
 |   3   | `0.4.0` | Site inspections for tanks, sumps and cleaning, the inspection report, converting an inspection to a job | Planned   |
 |   4   | `0.5.0` | Scheduling calendar, multi-day jobs, crew and equipment assignment, conflict warnings                    | Planned   |
 |   5   | `0.6.0` | Quotes and invoices as PDFs, instalment payments, settlement with an expense breakdown, profit           | Planned   |
 |   6   | `0.7.0` | Dashboard and targets, daily ledger, reconciliation, analytics and CSV export                            | Planned   |
 |   7   | `0.8.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Planned   |
 |   —   | `1.0.0` | Legacy data import and cut-over from the single-file app                                                 | Planned   |
+
+## Leads and jobs
+
+```mermaid
+stateDiagram-v2
+  [*] --> new: enquiry
+  new --> quoted
+  quoted --> new
+  new --> scheduled
+  quoted --> scheduled
+  scheduled --> quoted
+  scheduled --> in_progress
+  in_progress --> scheduled
+  scheduled --> completed
+  in_progress --> completed
+  completed --> in_progress: reopen
+  new --> cancelled
+  quoted --> cancelled
+  scheduled --> cancelled
+  in_progress --> cancelled
+  cancelled --> new: reopen
+```
+
+| Status      | Shown in | Set by                                       |
+| ----------- | -------- | -------------------------------------------- |
+| New lead    | Leads    | Office, website                              |
+| Quoted      | Leads    | Office, when a quote is sent                 |
+| Scheduled   | Jobs     | Office; needs a date                         |
+| In progress | Jobs     | Field crew or office                         |
+| Completed   | Jobs     | Field crew or office; sets the next due date |
+| Cancelled   | Jobs     | Office, with a reason                        |
+
+Technicians and supervisors can move a job along and add notes; prices, customer details and scheduling stay with the office.
 
 ## Roles
 
