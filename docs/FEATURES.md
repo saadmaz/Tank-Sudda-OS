@@ -19,7 +19,7 @@ The system replaces the legacy single-file operations app (see [ADR-0001](adr/00
 |   4   | `0.5.0` | Scheduling calendar, multi-day jobs, crew and equipment assignment, conflict warnings                    | Delivered |
 |   5   | `0.6.0` | Quotes and invoices as PDFs, instalment payments, settlement with an expense breakdown, profit           | Delivered |
 |   6   | `0.7.0` | Dashboard and targets, daily ledger, reconciliation, analytics and CSV export                            | Delivered |
-|   7   | `0.8.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Planned   |
+|   7   | `0.8.0` | Website lead intake, re-clean reminders, WhatsApp messages, job photos, audit log and offline field use  | Delivered |
 |   —   | `1.0.0` | Legacy data import and cut-over from the single-file app                                                 | Planned   |
 
 ## Leads and jobs

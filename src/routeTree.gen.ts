@@ -26,6 +26,7 @@ import { Route as AppInspectionsIndexRouteImport } from './routes/_app.inspectio
 import { Route as AppInspectionsInspectionIdRouteImport } from './routes/_app.inspections.$inspectionId'
 import { Route as AppJobsIndexRouteImport } from './routes/_app.jobs.index'
 import { Route as AppJobsJobIdRouteImport } from './routes/_app.jobs.$jobId'
+import { Route as ApiPublicWebsiteLeadRouteImport } from './routes/api.public.website-lead'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -112,6 +113,11 @@ const AppJobsJobIdRoute = AppJobsJobIdRouteImport.update({
   path: '/jobs/$jobId',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicWebsiteLeadRoute = ApiPublicWebsiteLeadRouteImport.update({
+  id: '/api/public/website-lead',
+  path: '/api/public/website-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/customers/$customerId': typeof AppCustomersCustomerIdRoute
   '/inspections/$inspectionId': typeof AppInspectionsInspectionIdRoute
   '/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/api/public/website-lead': typeof ApiPublicWebsiteLeadRoute
   '/customers/': typeof AppCustomersIndexRoute
   '/inspections/': typeof AppInspectionsIndexRoute
   '/jobs/': typeof AppJobsIndexRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/customers/$customerId': typeof AppCustomersCustomerIdRoute
   '/inspections/$inspectionId': typeof AppInspectionsInspectionIdRoute
   '/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/api/public/website-lead': typeof ApiPublicWebsiteLeadRoute
   '/customers': typeof AppCustomersIndexRoute
   '/inspections': typeof AppInspectionsIndexRoute
   '/jobs': typeof AppJobsIndexRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/_app/customers/$customerId': typeof AppCustomersCustomerIdRoute
   '/_app/inspections/$inspectionId': typeof AppInspectionsInspectionIdRoute
   '/_app/jobs/$jobId': typeof AppJobsJobIdRoute
+  '/api/public/website-lead': typeof ApiPublicWebsiteLeadRoute
   '/_app/customers/': typeof AppCustomersIndexRoute
   '/_app/inspections/': typeof AppInspectionsIndexRoute
   '/_app/jobs/': typeof AppJobsIndexRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/inspections/$inspectionId'
     | '/jobs/$jobId'
+    | '/api/public/website-lead'
     | '/customers/'
     | '/inspections/'
     | '/jobs/'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/inspections/$inspectionId'
     | '/jobs/$jobId'
+    | '/api/public/website-lead'
     | '/customers'
     | '/inspections'
     | '/jobs'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/_app/customers/$customerId'
     | '/_app/inspections/$inspectionId'
     | '/_app/jobs/$jobId'
+    | '/api/public/website-lead'
     | '/_app/customers/'
     | '/_app/inspections/'
     | '/_app/jobs/'
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   ChangePinRoute: typeof ChangePinRoute
   HealthzRoute: typeof HealthzRoute
+  ApiPublicWebsiteLeadRoute: typeof ApiPublicWebsiteLeadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -355,6 +368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppJobsJobIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/website-lead': {
+      id: '/api/public/website-lead'
+      path: '/api/public/website-lead'
+      fullPath: '/api/public/website-lead'
+      preLoaderRoute: typeof ApiPublicWebsiteLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -397,6 +417,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   ChangePinRoute: ChangePinRoute,
   HealthzRoute: HealthzRoute,
+  ApiPublicWebsiteLeadRoute: ApiPublicWebsiteLeadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

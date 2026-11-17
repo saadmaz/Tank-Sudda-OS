@@ -1,21 +1,13 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { doc } from "firebase/firestore";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Copy,
-  Loader2,
-  MapPin,
-  MessageCircle,
-  Pencil,
-  Phone,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, CalendarDays, Copy, Loader2, MapPin, Pencil, Phone, Users } from "lucide-react";
 import { toast } from "sonner";
 import { BillingPanel } from "@/components/billing-panel";
 import { BookInspection } from "@/components/book-inspection";
 import { JobEditor } from "@/components/job-editor";
+import { JobPhotos } from "@/components/job-photos";
+import { WhatsAppMenu } from "@/components/whatsapp-menu";
 import { StatusMenu } from "@/components/job-actions";
 import { EmptyState } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -120,13 +112,7 @@ function JobView({ job }: { job: Job }) {
               <Phone /> Call
             </a>
           </Button>
-          {wa && (
-            <Button variant="outline" asChild>
-              <a href={wa} target="_blank" rel="noreferrer">
-                <MessageCircle /> WhatsApp
-              </a>
-            </Button>
-          )}
+          {wa && <WhatsAppMenu phone={job.phone} name={job.customerName} job={job} />}
           <Button variant="outline" onClick={() => void copy()}>
             <Copy /> Copy
           </Button>
@@ -253,6 +239,8 @@ function JobView({ job }: { job: Job }) {
       </div>
 
       {(can("billing") || can("jobs") || can("leads")) && <BillingPanel job={job} />}
+
+      {!job.isDeleted && <JobPhotos job={job} />}
 
       {job.notes && (
         <Card>

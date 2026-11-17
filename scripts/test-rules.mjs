@@ -28,6 +28,9 @@ const manager = as("mgr", "Manager", ["dashboard", "reports"]);
 const office = as("off", "Office", ["dashboard", "leads"]);
 const tech = as("tech", "Technician", ["dashboard", "jobs"]);
 
+// Start from an empty database so reruns behave the same.
+await env.clearFirestore();
+
 await env.withSecurityRulesDisabled(async (ctx) => {
   const db = ctx.firestore();
   await setDoc(doc(db, "staff/tech"), { name: "Tech", active: true });

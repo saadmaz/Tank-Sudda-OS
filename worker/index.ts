@@ -9,6 +9,7 @@ interface Env {
   FIREBASE_PROJECT_ID: string;
   FIREBASE_CLIENT_EMAIL: string;
   FIREBASE_PRIVATE_KEY: string;
+  WEBSITE_WEBHOOK_SECRET?: string;
 }
 
 export class AppServer extends Container<Env> {
@@ -24,6 +25,7 @@ export class AppServer extends Container<Env> {
       FIREBASE_PROJECT_ID: env.FIREBASE_PROJECT_ID,
       FIREBASE_CLIENT_EMAIL: env.FIREBASE_CLIENT_EMAIL,
       FIREBASE_PRIVATE_KEY: env.FIREBASE_PRIVATE_KEY,
+      WEBSITE_WEBHOOK_SECRET: env.WEBSITE_WEBHOOK_SECRET ?? "",
     };
   }
 }

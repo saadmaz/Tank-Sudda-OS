@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { setDoc } from "firebase/firestore";
+import { collection, limit, orderBy, query, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref as storageRef, uploadBytes } from "firebase/storage";
 import { Plus, RotateCcw, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +16,10 @@ import { logAudit } from "@/lib/audit";
 import { formatLKR, toAmount } from "@/lib/currency";
 import { storage } from "@/lib/firebase";
 import { DEFAULT_TERMS, slugId, type Settings } from "@/lib/settings";
-import { settingsRef, useStore } from "@/lib/store";
+import { settingsRef, useLiveQuery, useStore } from "@/lib/store";
+import { DEFAULT_TEMPLATES, PLACEHOLDERS } from "@/lib/messages";
+import type { AuditEntry } from "@/lib/audit";
+import { db } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/settings")({
@@ -30,6 +33,8 @@ const TABS = [
   { key: "equipment", label: "Equipment" },
   { key: "terms", label: "Terms" },
   { key: "documents", label: "Documents & targets" },
+  { key: "messages", label: "Messages" },
+  { key: "activity", label: "Activity" },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -110,6 +115,8 @@ function SettingsPage() {
       {tab === "equipment" && <EquipmentTab draft={draft} update={update} />}
       {tab === "terms" && <TermsTab draft={draft} update={update} />}
       {tab === "documents" && <DocumentsTab draft={draft} update={update} />}
+      {tab === "messages" && <MessagesTab draft={draft} update={update} />}
+      {tab === "activity" && <ActivityTab />}
 
       {dirty && (
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 px-4 py-3 backdrop-blur lg:left-60">
@@ -776,5 +783,82 @@ function DocumentsTab({ draft, update }: TabProps) {
         </div>
       </Section>
     </div>
+  );
+}
+
+// ── Messages ─────────────────────────────────────────────────────────────────
+
+function MessagesTab({ draft, update }: TabProps) {
+  const msgs = draft.messages;
+  return (
+    <Section
+      title="WhatsApp messages"
+      description="Pre-written messages offered by the WhatsApp button on jobs and customers."
+      action={
+        <Button variant="ghost" size="sm" onClick={() => update("messages", DEFAULT_TEMPLATES)}>
+          <RotateCcw /> Defaults
+        </Button>
+      }
+    >
+      <div className="mb-4 flex flex-wrap gap-2 text-xs">
+        {PLACEHOLDERS.map(([p, label]) => (
+          <span key={p} className="rounded-md bg-muted px-2 py-1">
+            <code className="font-semibold">{p}</code> {label}
+          </span>
+        ))}
+      </div>
+      <div className="space-y-4">
+        {msgs.map((m, i) => (
+          <Field key={m.key} label={m.label} htmlFor={`msg-${m.key}`}>
+            <Textarea
+              id={`msg-${m.key}`}
+              rows={3}
+              value={m.text}
+              onChange={(e) =>
+                update(
+                  "messages",
+                  msgs.map((x, j) => (j === i ? { ...x, text: e.target.value } : x)),
+                )
+              }
+            />
+          </Field>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// ── Activity ─────────────────────────────────────────────────────────────────
+
+const ACTIVITY_QUERY = () => query(collection(db, "auditLog"), orderBy("at", "desc"), limit(150));
+
+function ActivityTab() {
+  const q = useMemo(ACTIVITY_QUERY, []);
+  const { data, ready } = useLiveQuery<AuditEntry>(q);
+  return (
+    <Section
+      title="Activity"
+      description="The latest 150 changes, newest first. Entries can't be edited."
+    >
+      {!ready ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : data.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No activity yet.</p>
+      ) : (
+        <ul className="divide-y text-sm">
+          {data.map((e) => (
+            <li key={e.id} className="flex flex-wrap gap-x-3 gap-y-0.5 py-2">
+              <span className="w-36 shrink-0 text-xs tabular-nums text-muted-foreground">
+                {new Date(e.at).toLocaleString("en-GB")}
+              </span>
+              <span className="w-28 shrink-0 truncate text-xs font-semibold">
+                {e.actorName || e.actorId}
+              </span>
+              <span className="min-w-0 flex-1">{e.summary}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }
