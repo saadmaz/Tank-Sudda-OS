@@ -1,0 +1,23 @@
+{
+  // Cloudflare configuration for Tank Sudda OS: a Worker that forwards
+  // every request to the Node server running in a Cloudflare Container.
+  // Deploys run from .github/workflows/deploy.yml.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tank-sudda-os",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "containers": [{ "class_name": "AppServer", "image": "./Dockerfile", "max_instances": 2 }],
+  "durable_objects": { "bindings": [{ "name": "APP_SERVER", "class_name": "AppServer" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AppServer"] }],
+  "observability": { "enabled": true },
+  "env": {
+    // `wrangler deploy --env development` publishes a separate Worker and container.
+    "development": {
+      "name": "tank-sudda-os-development",
+      "containers": [{ "class_name": "AppServer", "image": "./Dockerfile", "max_instances": 1 }],
+      "durable_objects": { "bindings": [{ "name": "APP_SERVER", "class_name": "AppServer" }] },
+      "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AppServer"] }],
+    },
+  },
+}
