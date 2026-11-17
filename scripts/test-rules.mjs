@@ -113,6 +113,85 @@ await check("only the general document exists", () =>
   assertFails(setDoc(doc(admin, "settings/other"), validSettings)),
 );
 
+console.log("jobs");
+const job = (over = {}) => ({
+  id: "TS-1",
+  status: "new",
+  customerName: "Nimal",
+  tanks: [],
+  sumps: [],
+  addOns: [],
+  subtotal: 9500,
+  total: 9500,
+  isDeleted: false,
+  createdAt: "t0",
+  createdBy: "off",
+  ...over,
+});
+const fieldTech = as("tech2", "Technician", ["jobs"]);
+const reportsOnly = as("rep", "Manager", ["reports"]);
+const noJobs = as("nj", "Office", ["dashboard"]);
+await check("office with leads can create a job", () =>
+  assertSucceeds(setDoc(doc(office, "jobs/TS-1"), job())),
+);
+await check("a job must be created in the creator's own name", () =>
+  assertFails(setDoc(doc(office, "jobs/TS-2"), job({ id: "TS-2", createdBy: "someone" }))),
+);
+await check("the id must match the document", () =>
+  assertFails(setDoc(doc(office, "jobs/TS-3"), job({ id: "TS-X" }))),
+);
+await check("a discount can't push the total above the subtotal", () =>
+  assertFails(setDoc(doc(office, "jobs/TS-4"), job({ id: "TS-4", total: 9999 }))),
+);
+await check("someone without job modules can't read", () =>
+  assertFails(getDoc(doc(noJobs, "jobs/TS-1"))),
+);
+await check("reports access can read", () => assertSucceeds(getDoc(doc(reportsOnly, "jobs/TS-1"))));
+await check("legal status move succeeds", () =>
+  assertSucceeds(updateDoc(doc(office, "jobs/TS-1"), { status: "scheduled" })),
+);
+await check("illegal status move fails", () =>
+  assertFails(updateDoc(doc(office, "jobs/TS-1"), { status: "new" })),
+);
+await check("a technician can start the job", () =>
+  assertSucceeds(
+    updateDoc(doc(fieldTech, "jobs/TS-1"), { status: "in_progress", startedAt: "t1" }),
+  ),
+);
+await check("a technician can't change the price", () =>
+  assertFails(updateDoc(doc(fieldTech, "jobs/TS-1"), { total: 1, subtotal: 1 })),
+);
+await check("createdBy can't be rewritten", () =>
+  assertFails(updateDoc(doc(office, "jobs/TS-1"), { createdBy: "off2" })),
+);
+await check("a job outside the trash can't be deleted", () =>
+  assertFails(deleteDoc(doc(superAdmin, "jobs/TS-1"))),
+);
+await check("office can move a job to the trash", () =>
+  assertSucceeds(updateDoc(doc(office, "jobs/TS-1"), { isDeleted: true })),
+);
+await check("office can't delete permanently", () =>
+  assertFails(deleteDoc(doc(office, "jobs/TS-1"))),
+);
+await check("a manager with jobs can delete from the trash", () =>
+  assertSucceeds(deleteDoc(doc(as("m3", "Manager", ["jobs"]), "jobs/TS-1"))),
+);
+
+console.log("customers");
+const customer = { name: "Nimal", phoneKey: "+94771234567", sites: [], isDeleted: false };
+await check("office with leads can create a customer", () =>
+  assertSucceeds(setDoc(doc(office, "customers/c1"), customer)),
+);
+await check("a customer needs a name", () =>
+  assertFails(setDoc(doc(office, "customers/c2"), { ...customer, name: "" })),
+);
+await check("someone without customer modules can't read", () =>
+  assertFails(getDoc(doc(noJobs, "customers/c1"))),
+);
+await check("office can't delete a customer", () =>
+  assertFails(deleteDoc(doc(office, "customers/c1"))),
+);
+
 console.log("default deny");
 await check("unknown collections are closed", () =>
   assertFails(getDoc(doc(superAdmin, "somethingElse/x"))),

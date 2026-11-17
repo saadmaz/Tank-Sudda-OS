@@ -48,6 +48,71 @@ service cloud.firestore {
         && request.resource.data.terms is list;
     }
 
+    // ── Jobs (leads are jobs that are still "new" or "quoted") ──────────────
+    function canSeeJobs() {
+      return hasModule("leads") || hasModule("jobs") || hasModule("schedule")
+        || hasModule("customers") || hasModule("billing") || hasModule("reports");
+    }
+    function canEditJobs() { return hasModule("leads") || hasModule("jobs"); }
+    function isFieldRole() { return isAuth() && role() in ["Technician", "Supervisor"]; }
+
+    // Mirrors JOB_TRANSITIONS in src/lib/job.ts; keep the two in step.
+    function legalJobTransitions() {
+      return {
+        "new":         ["quoted", "scheduled", "cancelled"],
+        "quoted":      ["new", "scheduled", "cancelled"],
+        "scheduled":   ["quoted", "in_progress", "completed", "cancelled"],
+        "in_progress": ["scheduled", "completed", "cancelled"],
+        "completed":   ["in_progress"],
+        "cancelled":   ["new"]
+      };
+    }
+
+    function validJob(d) {
+      return d.status in ["new", "quoted", "scheduled", "in_progress", "completed", "cancelled"]
+        && d.customerName is string && d.customerName.size() > 0
+        && d.tanks is list && d.sumps is list && d.addOns is list
+        && d.subtotal is number && d.total is number && d.total >= 0 && d.total <= d.subtotal
+        && d.isDeleted is bool;
+    }
+
+    match /jobs/{jobId} {
+      allow read: if canSeeJobs();
+      allow create: if canEditJobs()
+        && validJob(request.resource.data)
+        && request.resource.data.id == jobId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.isDeleted == false;
+      allow update: if canEditJobs()
+        && validJob(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.createdBy == resource.data.createdBy
+        && (request.resource.data.status == resource.data.status
+            || request.resource.data.status in legalJobTransitions()[resource.data.status])
+        // Field crews move jobs along and add notes; the office edits the rest.
+        && (!isFieldRole() || request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(["status", "updatedAt", "updatedBy", "startedAt", "completedAt", "notes"]));
+      // Permanent deletion only from the trash.
+      allow delete: if isManagerOrAbove() && canEditJobs() && resource.data.isDeleted == true;
+    }
+
+    // ── Customers ───────────────────────────────────────────────────────────
+    function canSeeCustomers() {
+      return hasModule("customers") || hasModule("leads") || hasModule("jobs") || hasModule("billing");
+    }
+    function validCustomer(d) {
+      return d.name is string && d.name.size() > 0
+        && d.phoneKey is string && d.sites is list && d.isDeleted is bool;
+    }
+
+    match /customers/{customerId} {
+      allow read: if canSeeCustomers();
+      allow create, update: if (hasModule("customers") || canEditJobs())
+        && validCustomer(request.resource.data);
+      allow delete: if isManagerOrAbove() && hasModule("customers");
+    }
+
     // ── Audit log ───────────────────────────────────────────────────────────
     // Append-only. A client may add an entry only in its own name.
     match /auditLog/{entryId} {
