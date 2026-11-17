@@ -31,6 +31,8 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-18
+
 ### Added
 
 - Staff sign-in with a username and 4-digit PIN, checked on the server against a bcrypt hash, with an escalating lockout after five wrong PINs and a forced PIN change after an administrator issues or resets one.
@@ -56,5 +58,6 @@
 - CI (lint, formatting, type check, unit tests, build), the Cloudflare deploy workflow and Dependabot.
 - README, Contributing guide, Code of Conduct, Security Policy, License, Changelog, issue and pull request templates, and the documentation set: architecture, configuration, deployment, features and roadmap, decision records and runbooks.
 
-[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/saadmaz/Tank-Sudda-POS/releases/tag/v0.1.0
