@@ -177,6 +177,34 @@ await check("a manager with jobs can delete from the trash", () =>
   assertSucceeds(deleteDoc(doc(as("m3", "Manager", ["jobs"]), "jobs/TS-1"))),
 );
 
+console.log("inspections");
+const insp = {
+  id: "IN-1",
+  type: "tank",
+  status: "scheduled",
+  customerName: "Nimal",
+  findings: {},
+  tanks: [],
+  sumps: [],
+  createdBy: "sup",
+};
+const supervisor = as("sup", "Supervisor", ["inspections", "jobs"]);
+await check("a supervisor can book an inspection", () =>
+  assertSucceeds(setDoc(doc(supervisor, "inspections/IN-1"), insp)),
+);
+await check("and complete it", () =>
+  assertSucceeds(updateDoc(doc(supervisor, "inspections/IN-1"), { status: "completed" })),
+);
+await check("an unknown type is rejected", () =>
+  assertFails(updateDoc(doc(supervisor, "inspections/IN-1"), { type: "roof" })),
+);
+await check("a supervisor can't delete it", () =>
+  assertFails(deleteDoc(doc(supervisor, "inspections/IN-1"))),
+);
+await check("someone without the modules can't read it", () =>
+  assertFails(getDoc(doc(noJobs, "inspections/IN-1"))),
+);
+
 console.log("customers");
 const customer = { name: "Nimal", phoneKey: "+94771234567", sites: [], isDeleted: false };
 await check("office with leads can create a customer", () =>

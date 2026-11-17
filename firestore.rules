@@ -97,6 +97,28 @@ service cloud.firestore {
       allow delete: if isManagerOrAbove() && canEditJobs() && resource.data.isDeleted == true;
     }
 
+    // ── Inspections ─────────────────────────────────────────────────────────
+    // Supervisors run them in the field, so anyone with the module may edit
+    // the checklist; only Manager+ may delete one.
+    function validInspection(d) {
+      return d.type in ["tank", "sump", "cleaning"]
+        && d.status in ["scheduled", "completed", "cancelled"]
+        && d.customerName is string && d.customerName.size() > 0
+        && d.findings is map && d.tanks is list && d.sumps is list;
+    }
+
+    match /inspections/{inspectionId} {
+      allow read: if hasModule("inspections") || canEditJobs();
+      allow create: if (hasModule("inspections") || canEditJobs())
+        && validInspection(request.resource.data)
+        && request.resource.data.id == inspectionId
+        && request.resource.data.createdBy == uid();
+      allow update: if (hasModule("inspections") || canEditJobs())
+        && validInspection(request.resource.data)
+        && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isManagerOrAbove() && hasModule("inspections");
+    }
+
     // ── Customers ───────────────────────────────────────────────────────────
     function canSeeCustomers() {
       return hasModule("customers") || hasModule("leads") || hasModule("jobs") || hasModule("billing");

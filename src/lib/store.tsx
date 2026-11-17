@@ -14,6 +14,7 @@ import type { StaffMember } from "./staff";
 import { DEFAULT_SETTINGS, normalizeSettings, type Settings } from "./settings";
 import { OPEN_STATUSES, type Job } from "./job";
 import type { Customer } from "./customer";
+import type { Inspection } from "./inspection";
 
 /** Closed jobs older than this load on demand (customer history, reports). */
 export const RECENT_JOB_DAYS = 120;
@@ -29,6 +30,8 @@ interface StoreValue {
   /** Every open job, plus closed jobs touched in the last RECENT_JOB_DAYS. */
   jobs: Job[];
   customers: Customer[];
+  /** Scheduled inspections plus any touched in the last RECENT_JOB_DAYS. */
+  inspections: Inspection[];
 }
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -96,6 +99,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       can("customers") ||
       can("billing") ||
       can("reports"));
+  const seesInspections = signedIn && (can("inspections") || can("jobs") || can("leads"));
   const seesCustomers =
     signedIn && (can("leads") || can("jobs") || can("customers") || can("billing"));
 
@@ -123,6 +127,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
   const customers = useLiveQuery<Customer>(customersQuery);
 
+  const openInspQuery = useMemo(
+    () =>
+      seesInspections
+        ? query(collection(db, "inspections"), where("status", "==", "scheduled"))
+        : null,
+    [seesInspections],
+  );
+  const recentInspQuery = useMemo(() => {
+    if (!seesInspections) return null;
+    const since = new Date(Date.now() - RECENT_JOB_DAYS * 86_400_000).toISOString();
+    return query(collection(db, "inspections"), where("updatedAt", ">=", since));
+  }, [seesInspections]);
+  const openInsp = useLiveQuery<Inspection>(openInspQuery);
+  const recentInsp = useLiveQuery<Inspection>(recentInspQuery);
+  const inspections = useMemo(() => {
+    const byId = new Map<string, Inspection>();
+    for (const i of recentInsp.data) byId.set(i.id, i);
+    for (const i of openInsp.data) byId.set(i.id, i);
+    return [...byId.values()];
+  }, [openInsp.data, recentInsp.data]);
+
   const jobs = useMemo(() => {
     const byId = new Map<string, Job>();
     for (const j of recentJobs.data) byId.set(j.id, j);
@@ -136,13 +161,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         staff.ready &&
         settings.ready &&
         (!seesJobs || (openJobs.ready && recentJobs.ready)) &&
-        (!seesCustomers || customers.ready),
+        (!seesCustomers || customers.ready) &&
+        (!seesInspections || (openInsp.ready && recentInsp.ready)),
       staff: staff.data,
       settings: settings.data ? normalizeSettings(settings.data) : DEFAULT_SETTINGS,
       jobs,
       customers: customers.data,
+      inspections,
     }),
-    [staff, settings, jobs, customers, seesJobs, seesCustomers, openJobs.ready, recentJobs.ready],
+    [
+      staff,
+      settings,
+      jobs,
+      customers,
+      seesJobs,
+      seesCustomers,
+      openJobs.ready,
+      recentJobs.ready,
+      inspections,
+      seesInspections,
+      openInsp.ready,
+      recentInsp.ready,
+    ],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

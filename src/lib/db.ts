@@ -19,6 +19,7 @@ import {
   type JobStatus,
 } from "./job";
 import { phoneKey, toE164 } from "./phone";
+import type { Inspection } from "./inspection";
 
 const now = () => new Date().toISOString();
 const me = () => auth.currentUser?.uid ?? "";
@@ -229,5 +230,87 @@ export async function saveCustomer(c: Customer): Promise<void> {
     entity: "customer",
     entityId: c.id,
     summary: `Updated customer ${c.name.trim()}`,
+  });
+}
+
+// ── Inspections ──────────────────────────────────────────────────────────────
+
+/** Creates or updates an inspection. A linked lead is marked as needing one. */
+export async function saveInspection(i: Inspection, isNew: boolean): Promise<void> {
+  const batch = writeBatch(db);
+  const ts = now();
+  batch.set(doc(db, "inspections", i.id), {
+    ...i,
+    createdAt: isNew ? ts : i.createdAt,
+    createdBy: isNew ? me() : i.createdBy,
+    updatedAt: ts,
+  });
+  if (isNew && i.jobId) {
+    batch.update(doc(db, "jobs", i.jobId), {
+      inspectionNeeded: true,
+      updatedAt: ts,
+      updatedBy: me(),
+    });
+  }
+  await batch.commit();
+  if (isNew) {
+    logAudit({
+      action: "inspection.create",
+      entity: "inspection",
+      entityId: i.id,
+      summary: `Booked inspection ${i.id} for ${i.customerName}`,
+    });
+  }
+}
+
+export async function setInspectionStatus(
+  i: Inspection,
+  status: Inspection["status"],
+): Promise<void> {
+  const batch = writeBatch(db);
+  const ts = now();
+  batch.update(doc(db, "inspections", i.id), {
+    status,
+    updatedAt: ts,
+    completedAt: status === "completed" ? ts : null,
+  });
+  await batch.commit();
+  logAudit({
+    action: "inspection.status",
+    entity: "inspection",
+    entityId: i.id,
+    summary: `${i.id} marked ${status}`,
+  });
+}
+
+/** Copies the measured tanks and sumps to the job, re-pricing it, and clears its inspection flag. */
+export async function applyInspectionToJob(i: Inspection, job: Job): Promise<void> {
+  const ts = now();
+  const f = i.findings;
+  const updated = withTotals({
+    ...job,
+    tanks: i.tanks.length ? i.tanks : job.tanks,
+    sumps: i.sumps.length ? i.sumps : job.sumps,
+    ladderNeeded: i.type === "tank" ? f.ladderRequired || job.ladderNeeded : job.ladderNeeded,
+    inspectionNeeded: false,
+  });
+  const batch = writeBatch(db);
+  batch.update(doc(db, "jobs", job.id), {
+    tanks: updated.tanks,
+    sumps: updated.sumps,
+    ladderNeeded: updated.ladderNeeded,
+    inspectionNeeded: false,
+    subtotal: updated.subtotal,
+    total: Math.min(updated.total, updated.subtotal),
+    updatedAt: ts,
+    updatedBy: me(),
+  });
+  batch.update(doc(db, "inspections", i.id), { appliedToJobAt: ts, updatedAt: ts });
+  await batch.commit();
+  logAudit({
+    action: "job.update",
+    entity: "job",
+    entityId: job.id,
+    summary: `Applied measurements from ${i.id} to ${job.id}`,
   });
 }
