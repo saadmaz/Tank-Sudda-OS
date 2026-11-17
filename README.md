@@ -64,7 +64,7 @@ It replaces the legacy single-file operations app ([ADR-0001](docs/adr/0001-rebu
 | At a glance      |                                                 |
 | ---------------- | ----------------------------------------------- |
 | **Organisation** | Tank Sudda (Pvt) Ltd                            |
-| **Status**       | In development                                  |
+| **Status**       | Ready for launch                                |
 | **Production**   | [os.tanksudda.com](https://os.tanksudda.com)    |
 | **Contact**      | [info@tanksudda.com](mailto:info@tanksudda.com) |
 | **Maintainer**   | [Saad Mazhar](https://github.com/saadmaz)       |
