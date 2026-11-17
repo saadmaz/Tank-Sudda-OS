@@ -31,6 +31,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-18
+
 ### Added
 
 - Leads and Jobs: one record follows the work from new lead through quoted, scheduled and in progress to completed or cancelled, with only legal status moves allowed (in the app and in Firestore rules).
@@ -69,6 +71,7 @@
 - CI (lint, formatting, type check, unit tests, build), the Cloudflare deploy workflow and Dependabot.
 - README, Contributing guide, Code of Conduct, Security Policy, License, Changelog, issue and pull request templates, and the documentation set: architecture, configuration, deployment, features and roadmap, decision records and runbooks.
 
-[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/saadmaz/Tank-Sudda-POS/releases/tag/v0.1.0
