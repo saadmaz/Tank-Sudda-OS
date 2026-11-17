@@ -92,9 +92,43 @@ service cloud.firestore {
             || request.resource.data.status in legalJobTransitions()[resource.data.status])
         // Field crews move jobs along and add notes; the office edits the rest.
         && (!isFieldRole() || request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(["status", "updatedAt", "updatedBy", "startedAt", "completedAt", "notes"]));
+              .hasOnly(["status", "updatedAt", "updatedBy", "startedAt", "completedAt", "notes",
+                        "paidAmount", "paymentStatus"]));
       // Permanent deletion only from the trash.
       allow delete: if isManagerOrAbove() && canEditJobs() && resource.data.isDeleted == true;
+    }
+
+    // ── Payments ────────────────────────────────────────────────────────────
+    // Crews collect cash on site, so anyone who can work on jobs may record a
+    // payment in their own name. Payments are never edited or deleted; a
+    // mistake is voided with a reason by someone with the billing module.
+    match /payments/{paymentId} {
+      allow read: if hasModule("billing") || hasModule("reports") || canEditJobs();
+      allow create: if (hasModule("billing") || canEditJobs())
+        && request.resource.data.id == paymentId
+        && request.resource.data.createdBy == uid()
+        && request.resource.data.amount is number && request.resource.data.amount > 0
+        && request.resource.data.method in ["cash", "bank", "cheque", "card"]
+        && request.resource.data.date is string
+        && request.resource.data.jobId is string
+        && request.resource.data.voided == false;
+      allow update: if hasModule("billing")
+        && resource.data.voided == false
+        && request.resource.data.voided == true
+        && request.resource.data.voidReason is string && request.resource.data.voidReason.size() > 0
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(["voided", "voidReason", "voidedAt"]);
+      allow delete: if false;
+    }
+
+    // Quote and invoice numbers only ever move forward.
+    match /counters/{name} {
+      allow read: if isAuth();
+      allow write: if name == "documents"
+        && (hasModule("billing") || canEditJobs())
+        && request.resource.data.quote is int && request.resource.data.invoice is int
+        && (resource == null || (request.resource.data.quote >= resource.data.quote
+                                 && request.resource.data.invoice >= resource.data.invoice));
     }
 
     // ── Inspections ─────────────────────────────────────────────────────────

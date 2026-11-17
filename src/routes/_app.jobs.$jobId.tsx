@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
+import { BillingPanel } from "@/components/billing-panel";
 import { BookInspection } from "@/components/book-inspection";
 import { JobEditor } from "@/components/job-editor";
 import { StatusMenu } from "@/components/job-actions";
@@ -250,6 +251,8 @@ function JobView({ job }: { job: Job }) {
           </Info>
         </div>
       </div>
+
+      {(can("billing") || can("jobs") || can("leads")) && <BillingPanel job={job} />}
 
       {job.notes && (
         <Card>

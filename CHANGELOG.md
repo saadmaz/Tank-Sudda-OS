@@ -33,6 +33,10 @@
 
 ### Added
 
+- Billing on every job: total, paid and balance with a paid, part-paid or unpaid status; record cash, bank transfer, cheque or card payments (advance suggested from the advance percentage); a receipt PDF per payment; void a payment with a reason.
+- Settlement when the office completes a job, as in the legacy app: final discount, expense breakdown, net profit and an optional final payment, then a job settlement PDF.
+- Quote and invoice PDFs with sequential numbers (Q-1001, INV-1001) that never repeat, line items, discount, advance, bank details, terms and conditions on quotes, and a PAID, PART PAID or UNPAID stamp on invoices. Issuing a quote moves a new lead to Quoted.
+- Billing screen: outstanding balances with how long since completion, quick payment, and payments received by date range with method totals.
 - Schedule: month calendar and a week agenda (the default on phones) of inspections and jobs, with multi-day jobs drawn across their days, status colours with counts, a crew filter, and quick creation of jobs and inspections.
 - Double-booking checks: the same person or machine on two jobs on one day is flagged on the schedule and in the job editor while choosing the crew.
 - Inspections: book a tank, sump or premises-cleaning inspection against a lead or job, then work through a phone-friendly checklist (safety, power, water shut-off, ladder, access, water level, sediment, condition, fittings, and the legacy cleaning details), record measured tanks and sumps, observations and recommendations, and complete it. Risks show as warnings for the office.

@@ -177,6 +177,56 @@ await check("a manager with jobs can delete from the trash", () =>
   assertSucceeds(deleteDoc(doc(as("m3", "Manager", ["jobs"]), "jobs/TS-1"))),
 );
 
+console.log("payments");
+const payment = {
+  id: "p1",
+  jobId: "TS-9",
+  amount: 5000,
+  method: "cash",
+  date: "2026-11-18",
+  createdBy: "tech2",
+  voided: false,
+};
+const billing = as("bill", "Office", ["billing", "leads"]);
+await check("a technician can record cash in their own name", () =>
+  assertSucceeds(setDoc(doc(fieldTech, "payments/p1"), payment)),
+);
+await check("not in someone else's name", () =>
+  assertFails(setDoc(doc(fieldTech, "payments/p2"), { ...payment, id: "p2", createdBy: "x" })),
+);
+await check("amounts must be positive", () =>
+  assertFails(setDoc(doc(fieldTech, "payments/p3"), { ...payment, id: "p3", amount: -5 })),
+);
+await check("a technician can't void", () =>
+  assertFails(
+    updateDoc(doc(fieldTech, "payments/p1"), { voided: true, voidReason: "x", voidedAt: "t" }),
+  ),
+);
+await check("billing can void with a reason", () =>
+  assertSucceeds(
+    updateDoc(doc(billing, "payments/p1"), {
+      voided: true,
+      voidReason: "Duplicate",
+      voidedAt: "t",
+    }),
+  ),
+);
+await check("a voided payment can't be changed again", () =>
+  assertFails(updateDoc(doc(billing, "payments/p1"), { voidReason: "y" })),
+);
+await check("payments can't be deleted", () =>
+  assertFails(deleteDoc(doc(superAdmin, "payments/p1"))),
+);
+await check("counters start", () =>
+  assertSucceeds(setDoc(doc(billing, "counters/documents"), { quote: 1001, invoice: 1001 })),
+);
+await check("counters move forward", () =>
+  assertSucceeds(setDoc(doc(billing, "counters/documents"), { quote: 1002, invoice: 1001 })),
+);
+await check("counters never go back", () =>
+  assertFails(setDoc(doc(billing, "counters/documents"), { quote: 1000, invoice: 1001 })),
+);
+
 console.log("inspections");
 const insp = {
   id: "IN-1",
