@@ -33,6 +33,9 @@
 
 ### Added
 
+- Dashboard: revenue against the monthly target with cash, bank, received and owed; this month's leads, inspections, scheduled, completed and cancelled; today's bookings; and what needs attention (leads waiting for a follow-up, unpaid completed jobs, customers due for cleaning, double bookings).
+- Reports for any period: revenue, money received by method, expenses, profit, lead conversion and average job value; revenue by day; breakdowns by location, lead source, service and cancellation reason; and the legacy leads-by-day summary.
+- Operations ledger and reconciliation PDFs for any date range, and a CSV export of every job in the period.
 - Billing on every job: total, paid and balance with a paid, part-paid or unpaid status; record cash, bank transfer, cheque or card payments (advance suggested from the advance percentage); a receipt PDF per payment; void a payment with a reason.
 - Settlement when the office completes a job, as in the legacy app: final discount, expense breakdown, net profit and an optional final payment, then a job settlement PDF.
 - Quote and invoice PDFs with sequential numbers (Q-1001, INV-1001) that never repeat, line items, discount, advance, bank details, terms and conditions on quotes, and a PAID, PART PAID or UNPAID stamp on invoices. Issuing a quote moves a new lead to Quoted.

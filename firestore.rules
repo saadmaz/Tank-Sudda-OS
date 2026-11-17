@@ -142,7 +142,7 @@ service cloud.firestore {
     }
 
     match /inspections/{inspectionId} {
-      allow read: if hasModule("inspections") || canEditJobs();
+      allow read: if hasModule("inspections") || canEditJobs() || hasModule("reports");
       allow create: if (hasModule("inspections") || canEditJobs())
         && validInspection(request.resource.data)
         && request.resource.data.id == inspectionId
