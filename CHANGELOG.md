@@ -31,6 +31,12 @@
 
 ## [Unreleased]
 
+### Added
+
+- Inspections: book a tank, sump or premises-cleaning inspection against a lead or job, then work through a phone-friendly checklist (safety, power, water shut-off, ladder, access, water level, sediment, condition, fittings, and the legacy cleaning details), record measured tanks and sumps, observations and recommendations, and complete it. Risks show as warnings for the office.
+- Apply an inspection's measurements to its job in one tap, re-pricing it.
+- Branded inspection report PDF, downloaded or shared straight to WhatsApp from a phone; the shared document layout that quotes and invoices will use.
+
 ## [0.3.0] - 2026-11-18
 
 ### Added

@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "sonner";
+import { BookInspection } from "@/components/book-inspection";
 import { JobEditor } from "@/components/job-editor";
 import { StatusMenu } from "@/components/job-actions";
 import { EmptyState } from "@/components/page-header";
@@ -23,6 +24,7 @@ import { useJobNames } from "@/hooks/use-names";
 import { useAuth } from "@/lib/auth";
 import { formatAmount, formatLKR } from "@/lib/currency";
 import { db } from "@/lib/firebase";
+import { INSPECTION_STATUS_LABEL, INSPECTION_TYPES } from "@/lib/inspection";
 import { JOB_SOURCES, jobService, jobSummaryText, scheduleLabel, type Job } from "@/lib/job";
 import { advanceAmount, priceSummary } from "@/lib/pricing";
 import { formatPhone, telLink, whatsappLink } from "@/lib/phone";
@@ -64,8 +66,10 @@ function JobDetail() {
 }
 
 function JobView({ job }: { job: Job }) {
-  const { settings } = useStore();
-  const { session } = useAuth();
+  const { settings, inspections } = useStore();
+  const { session, can } = useAuth();
+  const [booking, setBooking] = useState(false);
+  const linked = inspections.filter((i) => i.jobId === job.id);
   const names = useJobNames()(job);
   const [editing, setEditing] = useState(false);
   const summary = priceSummary(job);
@@ -258,6 +262,47 @@ function JobView({ job }: { job: Job }) {
         </Card>
       )}
 
+      {(linked.length > 0 || job.inspectionNeeded) && (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between">
+            <CardTitle>Inspections</CardTitle>
+            {can("inspections") && !job.isDeleted && (
+              <Button variant="outline" size="sm" onClick={() => setBooking(true)}>
+                Book inspection
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent>
+            {linked.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                This job needs an inspection before it's priced. None booked yet.
+              </p>
+            ) : (
+              <ul className="divide-y">
+                {linked.map((i) => (
+                  <li key={i.id}>
+                    <Link
+                      to="/inspections/$inspectionId"
+                      params={{ inspectionId: i.id }}
+                      className="flex flex-wrap items-center gap-x-4 gap-y-1 py-2 text-sm hover:text-primary"
+                    >
+                      <span className="font-mono text-xs text-muted-foreground">{i.id}</span>
+                      <span className="flex-1">
+                        {INSPECTION_TYPES.find((t) => t.value === i.type)?.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{i.date}</span>
+                      <Badge tone={i.status === "completed" ? "success" : "warning"}>
+                        {INSPECTION_STATUS_LABEL[i.status]}
+                      </Badge>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>History</CardTitle>
@@ -277,6 +322,7 @@ function JobView({ job }: { job: Job }) {
       </Card>
 
       {editing && <JobEditor job={job} onClose={() => setEditing(false)} />}
+      {booking && <BookInspection job={job} onClose={() => setBooking(false)} />}
     </div>
   );
 }
