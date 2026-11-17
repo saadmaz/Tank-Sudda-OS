@@ -3,6 +3,7 @@
 // still `new` or `quoted`. Pure: no firebase/react imports.
 
 import type { JobBilling } from "./billing";
+import type { JobPhoto } from "./photos";
 import { formatLKR } from "./currency";
 import { formatPhone } from "./phone";
 import { describeWork, priceSummary, type AddOn, type SumpItem, type TankItem } from "./pricing";
@@ -137,6 +138,7 @@ export interface Job extends Partial<JobBilling> {
 
   isDeleted: boolean;
   deletedAt: string | null;
+  photos?: JobPhoto[];
 }
 
 /** Fields the editor manages; ids, audit fields and totals are filled on save. */

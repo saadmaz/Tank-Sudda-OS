@@ -1,3 +1,5 @@
+import { DEFAULT_TEMPLATES, normalizeTemplates, type MessageTemplate } from "./messages";
+
 // Business settings: one document, `settings/general`, edited under Settings
 // and read by every screen. Defaults carry over the legacy app's values so a
 // fresh project prices jobs exactly as before. Pure: no firebase/react imports.
@@ -81,6 +83,8 @@ export interface Settings {
     /** Months after a completed cleaning before the next one is due. */
     recleanMonths: number;
   };
+  /** WhatsApp message templates. */
+  messages: MessageTemplate[];
   updatedAt?: string;
   updatedBy?: string;
 }
@@ -197,6 +201,7 @@ export const DEFAULT_SETTINGS: Settings = {
   reminders: {
     recleanMonths: 6,
   },
+  messages: DEFAULT_TEMPLATES,
 };
 
 const isObj = (v: unknown): v is Record<string, unknown> =>
@@ -268,6 +273,7 @@ export function normalizeSettings(stored: unknown): Settings {
     targets: mergeSection(DEFAULT_SETTINGS.targets, s.targets),
     documents: mergeSection(DEFAULT_SETTINGS.documents, s.documents),
     reminders: mergeSection(DEFAULT_SETTINGS.reminders, s.reminders),
+    messages: normalizeTemplates(s.messages),
     updatedAt: typeof s.updatedAt === "string" ? s.updatedAt : undefined,
     updatedBy: typeof s.updatedBy === "string" ? s.updatedBy : undefined,
   };

@@ -33,6 +33,10 @@
 
 ### Added
 
+- Website intake: bookings and enquiries from tanksudda.com arrive as new leads through a signed webhook, matched to an existing customer by phone and to a service location by town, flagged for inspection, and never duplicated on retries.
+- WhatsApp messages: booking confirmation, quote follow-up, payment reminder, review request and re-clean reminder templates with placeholders, editable under Settings and one tap away on jobs and customers.
+- Before, after and other photos on every job, taken with the phone camera and resized before upload.
+- Activity log under Settings: the latest changes and who made them, including website leads.
 - Dashboard: revenue against the monthly target with cash, bank, received and owed; this month's leads, inspections, scheduled, completed and cancelled; today's bookings; and what needs attention (leads waiting for a follow-up, unpaid completed jobs, customers due for cleaning, double bookings).
 - Reports for any period: revenue, money received by method, expenses, profit, lead conversion and average job value; revenue by day; breakdowns by location, lead source, service and cancellation reason; and the legacy leads-by-day summary.
 - Operations ledger and reconciliation PDFs for any date range, and a CSV export of every job in the period.

@@ -10,13 +10,14 @@
 
 Copy [`.env.example`](../.env.example) to `.env` for local work. In CI and production the same names are GitHub Environment secrets, passed to the Worker by [`deploy.yml`](../.github/workflows/deploy.yml).
 
-| Variable                                                               | Used by      | Secret | Purpose                                                          |
-| ---------------------------------------------------------------------- | ------------ | :----: | ---------------------------------------------------------------- |
-| `VITE_FIREBASE_*`                                                      | Client build |   No   | Firebase web app config, compiled into the browser bundle        |
-| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Server       |  Yes   | Service account for `firebase-admin`                             |
-| `SUPERADMIN_NAME`, `SUPERADMIN_USERNAME`, `SUPERADMIN_PIN`             | `seed:admin` |  Yes   | First SuperAdmin, created once; must choose a new PIN at sign-in |
-| `VITE_USE_FIREBASE_EMULATOR`                                           | Client build |   No   | `true` to use the local Firebase emulators                       |
-| `VITE_SENTRY_DSN`                                                      | Client build |   No   | Optional error reporting                                         |
+| Variable                                                               | Used by      | Secret | Purpose                                                                             |
+| ---------------------------------------------------------------------- | ------------ | :----: | ----------------------------------------------------------------------------------- |
+| `VITE_FIREBASE_*`                                                      | Client build |   No   | Firebase web app config, compiled into the browser bundle                           |
+| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Server       |  Yes   | Service account for `firebase-admin`                                                |
+| `SUPERADMIN_NAME`, `SUPERADMIN_USERNAME`, `SUPERADMIN_PIN`             | `seed:admin` |  Yes   | First SuperAdmin, created once; must choose a new PIN at sign-in                    |
+| `VITE_USE_FIREBASE_EMULATOR`                                           | Client build |   No   | `true` to use the local Firebase emulators                                          |
+| `WEBSITE_WEBHOOK_SECRET`                                               | Server       |  Yes   | Verifies leads from the website; see [website leads](integrations/website-leads.md) |
+| `VITE_SENTRY_DSN`                                                      | Client build |   No   | Optional error reporting                                                            |
 
 > [!NOTE]
 > Firebase web config values are public identifiers, not secrets: Firestore rules, not the API key, protect the data. The service account private key is a secret and must never be committed.
