@@ -39,6 +39,12 @@
 - Staff screen: add and edit people, their field roles (supervisor, technician), colour, active status, sign-in, role and modules, and reset a PIN. Seniority rules stop anyone editing a peer or granting a role above their own.
 - Firestore and Storage rules with an emulator test suite (`npm run test:rules`), a rules deploy workflow and `npm run seed:admin` to create the first SuperAdmin.
 - Offline cache for Firestore so screens stay readable and changes queue without a signal.
+- Settings screen with company details and logo, bank account, overhead tank sizes and prices, sump rate per cubic foot, ladder fee, advance percentage, service locations with transport fees, equipment, terms and conditions, the monthly revenue target, re-clean reminder interval, and quote and invoice numbering. Defaults carry over the legacy app's prices, locations, equipment and terms.
+- Audit log entries for settings and staff changes.
+
+### Changed
+
+- Dependabot no longer opens npm major-version upgrades; those are planned as their own change.
 
 ## [0.1.0] - 2026-11-17
 

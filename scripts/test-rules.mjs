@@ -85,6 +85,34 @@ await check("entries cannot be deleted", () =>
   assertFails(deleteDoc(doc(superAdmin, "auditLog/a1"))),
 );
 
+console.log("settings");
+const validSettings = { pricing: { sumpRatePerCubicFt: 2500 }, locations: [], terms: [] };
+const admin = as("adm", "Admin", ["settings", "staff"]);
+const managerWithSettings = as("mgr2", "Manager", ["settings"]);
+const officeWithSettings = as("off2", "Office", ["settings"]);
+await check("anyone signed in can read", () =>
+  assertSucceeds(getDoc(doc(tech, "settings/general"))),
+);
+await check("anonymous cannot read", () => assertFails(getDoc(doc(anon, "settings/general"))));
+await check("admin with the module can write", () =>
+  assertSucceeds(setDoc(doc(admin, "settings/general"), validSettings)),
+);
+await check("manager granted the module can write", () =>
+  assertSucceeds(setDoc(doc(managerWithSettings, "settings/general"), validSettings)),
+);
+await check("manager without the module cannot write", () =>
+  assertFails(setDoc(doc(manager, "settings/general"), validSettings)),
+);
+await check("office cannot write even with the module", () =>
+  assertFails(setDoc(doc(officeWithSettings, "settings/general"), validSettings)),
+);
+await check("malformed settings are rejected", () =>
+  assertFails(setDoc(doc(admin, "settings/general"), { pricing: { sumpRatePerCubicFt: "x" } })),
+);
+await check("only the general document exists", () =>
+  assertFails(setDoc(doc(admin, "settings/other"), validSettings)),
+);
+
 console.log("default deny");
 await check("unknown collections are closed", () =>
   assertFails(getDoc(doc(superAdmin, "somethingElse/x"))),
