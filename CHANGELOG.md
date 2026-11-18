@@ -81,7 +81,6 @@
 ### Changed
 
 - Route files are exempt from the fast-refresh lint rule, since they must export `Route`.
-- Dependabot no longer opens npm major-version upgrades; those are planned as their own change.
 
 ## [0.1.0] - 2026-11-17
 
@@ -90,7 +89,7 @@
 - Repository foundation: TanStack Start app shell on React 19 and Vite, Tailwind CSS v4 design tokens in the Tank Sudda brand, and Radix-based UI primitives.
 - Production Node server (`server.mjs`) with the Content Security Policy, security headers and asset caching, a `Dockerfile`, and a Cloudflare Worker and container configuration for production and development.
 - `/healthz` endpoint used by the deploy smoke test.
-- CI (lint, formatting, type check, unit tests, build), the Cloudflare deploy workflow and Dependabot.
+- CI (lint, formatting, type check, unit tests, build) and the Cloudflare deploy workflow.
 - README, Contributing guide, Code of Conduct, Security Policy, License, Changelog, issue and pull request templates, and the documentation set: architecture, configuration, deployment, features and roadmap, decision records and runbooks.
 
 [Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v1.0.0...HEAD
