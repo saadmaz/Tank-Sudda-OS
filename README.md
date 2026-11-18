@@ -17,6 +17,7 @@
 <br/>
 
 <a href="https://os.tanksudda.com"><img alt="Visit os.tanksudda.com" src="https://img.shields.io/badge/Visit%20os.tanksudda.com-1f1f1f?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
+<a href="https://www.figma.com/design/HlbouGQvbYbkr1qkaJxexp/Tank-Sudda"><img alt="Design in Figma" src="https://img.shields.io/badge/Design-1f1f1f?style=for-the-badge&logo=figma&logoColor=white"></a>
 <a href="docs/README.md"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-1f1f1f?style=for-the-badge&logo=readthedocs&logoColor=white"></a>
 <a href="https://github.com/saadmaz/Tank-Sudda-POS/issues/new?template=bug_report.yml"><img alt="Report a bug" src="https://img.shields.io/badge/Report%20a%20bug-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
 <a href="https://github.com/saadmaz/Tank-Sudda-POS/issues/new?template=feature_request.yml"><img alt="Request a change" src="https://img.shields.io/badge/Request%20a%20change-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
