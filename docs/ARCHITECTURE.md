@@ -4,7 +4,7 @@
 
 <sub><a href="../README.md">Project README</a> · <a href="README.md">Documentation index</a></sub>
 
-> How Tank Sudda POS is built and how data moves through it. Part of the [project documentation](README.md).
+> How Tank Sudda OS is built and how data moves through it. Part of the [project documentation](README.md).
 
 ## Overview
 

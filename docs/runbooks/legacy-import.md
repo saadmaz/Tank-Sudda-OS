@@ -4,7 +4,7 @@
 
 <sub><a href="../../README.md">Project README</a> · <a href="../README.md">Documentation index</a></sub>
 
-> Moving the business from the legacy single-file app to Tank Sudda POS, once.
+> Moving the business from the legacy single-file app to Tank Sudda OS, once.
 
 ## What is imported
 

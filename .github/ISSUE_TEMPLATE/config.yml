@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/saadmaz/Tank-Sudda-POS/blob/main/SECURITY.md
+    url: https://github.com/saadmaz/Tank-Sudda-OS/blob/main/SECURITY.md
     about: Please report security issues privately, not in a public issue.
   - name: Customer enquiry
     url: https://tanksudda.com

@@ -2,11 +2,11 @@
 
 <div align="center">
 
-<img src=".github/assets/security.svg" alt="Tank Sudda POS: Security Policy" width="100%">
+<img src=".github/assets/security.svg" alt="Tank Sudda OS: Security Policy" width="100%">
 
 <br/>
 
-<p><strong>We take the security of Tank Sudda POS and the people who use it seriously. Thank you for helping keep them safe.</strong></p>
+<p><strong>We take the security of Tank Sudda OS and the people who use it seriously. Thank you for helping keep them safe.</strong></p>
 
 <a href="README.md"><img alt="README" src="https://img.shields.io/badge/README-374151?style=for-the-badge&labelColor=111827"></a>
 <a href="CONTRIBUTING.md"><img alt="Contributing" src="https://img.shields.io/badge/Contributing-374151?style=for-the-badge&labelColor=111827"></a>
@@ -24,11 +24,11 @@
 
 ## Reporting a vulnerability
 
-|              |                                                                                                                                                                                                                                    |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Email**    | [info@tanksudda.com](mailto:info@tanksudda.com?subject=Security%20report) with the subject line `Security report` or GitHub's [private vulnerability reporting](https://github.com/saadmaz/Tank-Sudda-POS/security/advisories/new) |
-| **Include**  | What the issue is and its impact · the affected URL, screen, endpoint or file · steps to reproduce or a proof of concept · any suggested fix                                                                                       |
-| **Language** | English                                                                                                                                                                                                                            |
+|              |                                                                                                                                                                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Email**    | [info@tanksudda.com](mailto:info@tanksudda.com?subject=Security%20report) with the subject line `Security report` or GitHub's [private vulnerability reporting](https://github.com/saadmaz/Tank-Sudda-OS/security/advisories/new) |
+| **Include**  | What the issue is and its impact · the affected URL, screen, endpoint or file · steps to reproduce or a proof of concept · any suggested fix                                                                                      |
+| **Language** | English                                                                                                                                                                                                                           |
 
 <p align="right"><a href="#top">Back to top ↑</a></p>
 

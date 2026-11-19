@@ -4,7 +4,7 @@
 
 <sub><a href="../README.md">Project README</a> · <a href="README.md">Documentation index</a></sub>
 
-> Every module in Tank Sudda POS, who uses it, and the order in which it is delivered.
+> Every module in Tank Sudda OS, who uses it, and the order in which it is delivered.
 
 ## Delivery roadmap
 
