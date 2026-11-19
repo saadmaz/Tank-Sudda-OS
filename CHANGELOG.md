@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src=".github/assets/changelog.svg" alt="Tank Sudda POS: Changelog" width="100%">
+<img src=".github/assets/changelog.svg" alt="Tank Sudda OS: Changelog" width="100%">
 
 <br/>
 
@@ -21,15 +21,19 @@
 
 <div align="center">
 
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-POS?include_prereleases&style=flat-square&label=latest%20release&labelColor=111827&color=4ba7db"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/compare/main...develop"><img alt="Changes waiting for release" src="https://img.shields.io/github/commits-difference/saadmaz/Tank-Sudda-POS?base=main&head=develop&style=flat-square&label=unreleased%20commits&labelColor=111827&color=374151"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-OS?include_prereleases&style=flat-square&label=latest%20release&labelColor=111827&color=4ba7db"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/compare/main...develop"><img alt="Changes waiting for release" src="https://img.shields.io/github/commits-difference/saadmaz/Tank-Sudda-OS?base=main&head=develop&style=flat-square&label=unreleased%20commits&labelColor=111827&color=374151"></a>
 
 </div>
 
 > [!NOTE]
-> The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Each version links to its full comparison at the bottom of this page, and to its [release notes](https://github.com/saadmaz/Tank-Sudda-POS/releases).
+> The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Each version links to its full comparison at the bottom of this page, and to its [release notes](https://github.com/saadmaz/Tank-Sudda-OS/releases).
 
 ## [Unreleased]
+
+### Changed
+
+- Renamed from Tank Sudda POS to **Tank Sudda OS**: the repository (`Tank-Sudda-OS`) and package name (`tank-sudda-os`), matching the existing Worker names and `os.tanksudda.com`.
 
 ## [1.0.0] - 2026-11-18
 
@@ -92,8 +96,8 @@
 - CI (lint, formatting, type check, unit tests, build) and the Cloudflare deploy workflow.
 - README, Contributing guide, Code of Conduct, Security Policy, License, Changelog, issue and pull request templates, and the documentation set: architecture, configuration, deployment, features and roadmap, decision records and runbooks.
 
-[Unreleased]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.3.0...v1.0.0
-[0.3.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/saadmaz/Tank-Sudda-POS/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/saadmaz/Tank-Sudda-POS/releases/tag/v0.1.0
+[Unreleased]: https://github.com/saadmaz/Tank-Sudda-OS/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/saadmaz/Tank-Sudda-OS/compare/v0.3.0...v1.0.0
+[0.3.0]: https://github.com/saadmaz/Tank-Sudda-OS/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/saadmaz/Tank-Sudda-OS/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/saadmaz/Tank-Sudda-OS/releases/tag/v0.1.0

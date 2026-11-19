@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src=".github/assets/conduct.svg" alt="Tank Sudda POS: Code of Conduct" width="100%">
+<img src=".github/assets/conduct.svg" alt="Tank Sudda OS: Code of Conduct" width="100%">
 
 <br/>
 

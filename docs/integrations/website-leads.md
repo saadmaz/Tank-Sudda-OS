@@ -4,7 +4,7 @@
 
 <sub><a href="../../README.md">Project README</a> · <a href="../README.md">Documentation index</a></sub>
 
-> How booking requests and enquiries from [tanksudda.com](https://tanksudda.com) arrive in Tank Sudda POS as leads.
+> How booking requests and enquiries from [tanksudda.com](https://tanksudda.com) arrive in Tank Sudda OS as leads.
 
 ## Contract
 

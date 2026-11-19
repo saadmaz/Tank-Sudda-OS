@@ -1,14 +1,14 @@
 {
-  "name": "tank-sudda-pos",
+  "name": "tank-sudda-os",
   "version": "1.0.0",
-  "description": "Operations and point-of-sale platform for Tank Sudda: leads, inspections, scheduling, jobs, quotes, invoices, payments and reports.",
-  "homepage": "https://github.com/saadmaz/Tank-Sudda-POS#readme",
+  "description": "Operations system for Tank Sudda: leads, inspections, scheduling, jobs, quotes, invoices, payments and reports.",
+  "homepage": "https://github.com/saadmaz/Tank-Sudda-OS#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/saadmaz/Tank-Sudda-POS.git"
+    "url": "git+https://github.com/saadmaz/Tank-Sudda-OS.git"
   },
   "bugs": {
-    "url": "https://github.com/saadmaz/Tank-Sudda-POS/issues"
+    "url": "https://github.com/saadmaz/Tank-Sudda-OS/issues"
   },
   "author": "Saad Mazhar (https://github.com/saadmaz)",
   "license": "UNLICENSED",

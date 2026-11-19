@@ -2,16 +2,16 @@
 
 <div align="center">
 
-<img src=".github/assets/banner.svg" alt="Tank Sudda POS: Operations and point-of-sale platform for Tank Sudda." width="100%">
+<img src=".github/assets/banner.svg" alt="Tank Sudda OS: Operations system for Tank Sudda." width="100%">
 
 <br/>
 
 <p><strong>Leads, inspections, scheduling, jobs, quotes, invoices, payments, staff and reporting for water tank and sump cleaning, live on every device.</strong></p>
 
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-POS?include_prereleases&style=flat-square&label=release&labelColor=111827&color=4ba7db"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/saadmaz/Tank-Sudda-POS/actions/workflows/ci.yml/badge.svg?branch=develop"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/deployments"><img alt="Production deployment" src="https://img.shields.io/github/deployments/saadmaz/Tank-Sudda-POS/production?style=flat-square&label=production&labelColor=111827&logo=github"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/commits/develop"><img alt="Last commit" src="https://img.shields.io/github/last-commit/saadmaz/Tank-Sudda-POS/develop?style=flat-square&labelColor=111827&color=374151"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-OS?include_prereleases&style=flat-square&label=release&labelColor=111827&color=4ba7db"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/saadmaz/Tank-Sudda-OS/actions/workflows/ci.yml/badge.svg?branch=develop"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/deployments"><img alt="Production deployment" src="https://img.shields.io/github/deployments/saadmaz/Tank-Sudda-OS/production?style=flat-square&label=production&labelColor=111827&logo=github"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/commits/develop"><img alt="Last commit" src="https://img.shields.io/github/last-commit/saadmaz/Tank-Sudda-OS/develop?style=flat-square&labelColor=111827&color=374151"></a>
 <img alt="License" src="https://img.shields.io/badge/license-proprietary-374151?style=flat-square&labelColor=111827">
 
 <br/>
@@ -19,8 +19,8 @@
 <a href="https://os.tanksudda.com"><img alt="Visit os.tanksudda.com" src="https://img.shields.io/badge/Visit%20os.tanksudda.com-1f1f1f?style=for-the-badge&logo=googlechrome&logoColor=white"></a>
 <a href="https://www.figma.com/design/HlbouGQvbYbkr1qkaJxexp/Tank-Sudda"><img alt="Design in Figma" src="https://img.shields.io/badge/Design-1f1f1f?style=for-the-badge&logo=figma&logoColor=white"></a>
 <a href="docs/README.md"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-1f1f1f?style=for-the-badge&logo=readthedocs&logoColor=white"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/issues/new?template=bug_report.yml"><img alt="Report a bug" src="https://img.shields.io/badge/Report%20a%20bug-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
-<a href="https://github.com/saadmaz/Tank-Sudda-POS/issues/new?template=feature_request.yml"><img alt="Request a change" src="https://img.shields.io/badge/Request%20a%20change-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/issues/new?template=bug_report.yml"><img alt="Report a bug" src="https://img.shields.io/badge/Report%20a%20bug-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
+<a href="https://github.com/saadmaz/Tank-Sudda-OS/issues/new?template=feature_request.yml"><img alt="Request a change" src="https://img.shields.io/badge/Request%20a%20change-1f1f1f?style=for-the-badge&logo=github&logoColor=white"></a>
 
 <br/>
 
@@ -58,7 +58,7 @@
 
 ## About
 
-Tank Sudda POS runs the day-to-day operation of Tank Sudda, a water tank and sump cleaning service in Sri Lanka. The office takes leads and books inspections, supervisors schedule crews and equipment, technicians work through jobs on their phones, and the office raises quotes and invoices, records payments and settles each job. The website at [tanksudda.com](https://tanksudda.com) feeds bookings straight in as leads.
+Tank Sudda OS runs the day-to-day operation of Tank Sudda, a water tank and sump cleaning service in Sri Lanka. The office takes leads and books inspections, supervisors schedule crews and equipment, technicians work through jobs on their phones, and the office raises quotes and invoices, records payments and settles each job. The website at [tanksudda.com](https://tanksudda.com) feeds bookings straight in as leads.
 
 It replaces the legacy single-file operations app ([ADR-0001](docs/adr/0001-rebuild-the-legacy-single-file-app.md)) and is delivered in phases; see the [roadmap](docs/FEATURES.md#delivery-roadmap).
 
@@ -145,8 +145,8 @@ flowchart LR
 ### Install and run
 
 ```sh
-git clone https://github.com/saadmaz/Tank-Sudda-POS.git
-cd Tank-Sudda-POS
+git clone https://github.com/saadmaz/Tank-Sudda-OS.git
+cd Tank-Sudda-OS
 npm ci
 cp .env.example .env    # fill in the Firebase web config and server credentials
 npm run dev
@@ -245,7 +245,7 @@ npm run lint && npm run format:check && npm run typecheck && npm test && npm run
 | Environment | Branch    | URL                                                  | Status                                                                                                                                                         |
 | ----------- | --------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Development | `develop` | [dev.os.tanksudda.com](https://dev.os.tanksudda.com) | <img alt="development: awaiting host setup" src="https://img.shields.io/badge/development-awaiting%20host%20setup-6b7280?style=flat-square&labelColor=111827"> |
-| Production  | `main`    | [os.tanksudda.com](https://os.tanksudda.com)         | <img alt="production" src="https://img.shields.io/github/deployments/saadmaz/Tank-Sudda-POS/production?style=flat-square&label=production&labelColor=111827">  |
+| Production  | `main`    | [os.tanksudda.com](https://os.tanksudda.com)         | <img alt="production" src="https://img.shields.io/github/deployments/saadmaz/Tank-Sudda-OS/production?style=flat-square&label=production&labelColor=111827">   |
 
 ```mermaid
 flowchart LR
@@ -283,9 +283,9 @@ Every STTPS repository uses the same documentation layout.
 
 ## Releases and versioning
 
-[![Latest release](https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-POS?include_prereleases&style=for-the-badge&label=latest%20release&labelColor=111827&color=4ba7db)](https://github.com/saadmaz/Tank-Sudda-POS/releases)
+[![Latest release](https://img.shields.io/github/v/release/saadmaz/Tank-Sudda-OS?include_prereleases&style=for-the-badge&label=latest%20release&labelColor=111827&color=4ba7db)](https://github.com/saadmaz/Tank-Sudda-OS/releases)
 
-The project follows [Semantic Versioning](https://semver.org). Every release is tagged `vX.Y.Z`, published on the [Releases](https://github.com/saadmaz/Tank-Sudda-POS/releases) page with its notes, and recorded in [CHANGELOG.md](CHANGELOG.md). The procedure is in [docs/runbooks/release.md](docs/runbooks/release.md).
+The project follows [Semantic Versioning](https://semver.org). Every release is tagged `vX.Y.Z`, published on the [Releases](https://github.com/saadmaz/Tank-Sudda-OS/releases) page with its notes, and recorded in [CHANGELOG.md](CHANGELOG.md). The procedure is in [docs/runbooks/release.md](docs/runbooks/release.md).
 
 <p align="right"><a href="#readme-top">Back to top ↑</a></p>
 

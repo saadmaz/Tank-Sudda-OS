@@ -4,7 +4,7 @@
 
 <sub><a href="../README.md">Project README</a> · <a href="README.md">Documentation index</a></sub>
 
-> How Tank Sudda POS reaches production. Part of the [project documentation](README.md).
+> How Tank Sudda OS reaches production. Part of the [project documentation](README.md).
 
 > [!IMPORTANT]
 > The app runs on **Cloudflare**: a Worker in front of the Node server in a Cloudflare Container ([ADR-0004](adr/0004-host-on-cloudflare.md)). Deploys switch on with the `CLOUDFLARE_ENABLED` (production) and `DEVELOPMENT_ENABLED` (development) repository variables. Until they are set, merges build and test in CI but deploy nowhere.
